@@ -47,6 +47,8 @@ class objmesh {
 		this.shader.rMatrixUniform = gl.getUniformLocation(this.shader, "uRMatrix");
 		this.shader.mvMatrixUniform = gl.getUniformLocation(this.shader, "uMVMatrix");
 		this.shader.pMatrixUniform = gl.getUniformLocation(this.shader, "uPMatrix");
+		this.shader.rsMatrixUniform = gl.getUniformLocation(this.shader, "uRotSkybox");
+
 	}
 	
 	// --------------------------------------------
@@ -57,6 +59,7 @@ class objmesh {
 		gl.uniformMatrix4fv(this.shader.rMatrixUniform, false, rotMatrix);
 		gl.uniformMatrix4fv(this.shader.mvMatrixUniform, false, mvMatrix);
 		gl.uniformMatrix4fv(this.shader.pMatrixUniform, false, pMatrix);
+		gl.uniformMatrix4fv(this.shader.rsMatrixUniform, false, CUBEMAP.rotMatrix);
 	}
 	
 	// --------------------------------------------
@@ -169,6 +172,10 @@ class cubemap {
 		this.loaded=-1;
 		this.shader=null;
 		this.initAll();
+		
+		this.rotMatrix = mat4.create();
+		mat4.identity(this.rotMatrix);
+		mat4.rotate(this.rotMatrix, 1.5708, [1, 0, 0]);
 	}
 		
 	// --------------------------------------------
@@ -214,7 +221,7 @@ class cubemap {
 
 		
 		// VERTICES DATA
-		var size=10.0;
+		var size=25.0;
 		var vertices = [
 			// bottom
 			-size,  size, -size,
@@ -288,10 +295,10 @@ class cubemap {
 			1.0,0.0,
 
 			//top
-			0.0,0.0,
-			0.0,1.0,
-			1.0,1.0,
 			1.0,0.0,
+			0.0,1.0,
+			0.0,0.0,
+			1.0,1.0,
 
 			//left
 			0.0,0.0,
@@ -355,15 +362,19 @@ class cubemap {
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.tBuffer);
 		gl.vertexAttribPointer(this.shader.tAttrib,this.tBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
+		this.shader.rMatrixUniform = gl.getUniformLocation(this.shader, "uRMatrix");
 		this.shader.pMatrixUniform = gl.getUniformLocation(this.shader, "uPMatrix");
 		this.shader.mvMatrixUniform = gl.getUniformLocation(this.shader, "uMVMatrix");
+		this.shader.rsMatrixUniform = gl.getUniformLocation(this.shader, "uRotSkybox");
 
 		mat4.identity(mvMatrix);
 		mat4.translate(mvMatrix, distCENTER);
 		mat4.multiply(mvMatrix, rotMatrix);
 
+		gl.uniformMatrix4fv(this.shader.rMatrixUniform, false, rotMatrix);
 		gl.uniformMatrix4fv(this.shader.pMatrixUniform, false, pMatrix);
 		gl.uniformMatrix4fv(this.shader.mvMatrixUniform, false, mvMatrix);
+		gl.uniformMatrix4fv(this.shader.rsMatrixUniform, false, this.rotMatrix);
 
 	}
 
@@ -509,7 +520,7 @@ function webGLStart() {
 	PLANE = new plane();
 	CUBEMAP = new cubemap();
 
-	OBJ1 = new objmesh('bunny.obj');
+	OBJ1 = new objmesh('cube.obj');
 	//OBJ2 = new objmesh('porsche.obj');
 	
 	gl.enable(gl.DEPTH_TEST);
@@ -526,8 +537,6 @@ function drawScene() {
 	
 	OBJ1.draw();
 	//OBJ2.draw();
-	
-
 }
 
 
