@@ -1,21 +1,67 @@
 <html>
+	<head >
+		<title>WebGL - Canvas test</title>
+		<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+		
+		<script type="text/javascript" src="glMatrix.js"></script>
+		<script type="text/javascript" src="callbacks.js"></script>
+		<script type="text/javascript" src="glCourseBasis.js"></script>
+		<script type="text/javascript" src="objLoader.js"></script>
+		<script type="text/javascript" src="function.js"></script>
 
-<head>
-	<title>WebGL - Canvas test</title>
-	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+	</head>
 
-	<script type="text/javascript" src="glMatrix.js"></script>
-	<script type="text/javascript" src="callbacks.js"></script>
-	<script type="text/javascript" src="glCourseBasis.js"></script>
-	<script type="text/javascript" src="objLoader.js"></script>
+	<body onload="webGLStart();">
+		<table>
+			<tr>
+				<td>
+					<!-- ZONE DE DESSIN-->
+					<canvas id="WebGL-test" style="border:none;" width="800" height="600"></canvas>
+				</td>
+				<td>
+					<!-- ZONE DE PARAMETRAGE -->
+					<form>
+						<fieldset>
+							<legend> Parametrage de la lumiere </legend>
+							<label for="posX">X: </label>
+							<input type="number" step="0.01" id="posX">
+							<br>
+							<label for="posY">Y: </label>
+							<input type="number" step="0.01" id="posY">
+							<br>
+							<label for="posZ">Z: </label>
+							<input type="number" step="0.01" id="posZ">
+							<br>
+							<label for="lightColor">Couleur de la lumiere : </label>
+							<input type="color" id="lightColor" name="lightColor" value="#e66465">
 
-</head>
+						</fieldset>	
+						<fieldset>
+							<legend> Parametrage de la scene </legend>
+							<label for="rotX">Rotation en X : </label>
+							<input type="range" id="rotX" name="rotX" min="0" max="365">
+							<br>
 
+							<label for="rotY">Rotation en Y : </label>
+							<input type="range" id="rotY" name="rotY" min="0" max="365">
+							<br>
+							
+							<label for="rotZ">Rotation en Z : </label>
+							<input type="range" id="rotZ" name="rotZ" min="0" max="365">
+							<br>
+							
+							
+						</fieldset>
+						<fieldset> 
+							<legend> Parametrage de l'objet  </legend>
+							<label for="objColor">Couleur de l'objet : </label>
+							<input type="color" id="objColor" name="objColor" value="#e66465">
 
-<body onload="webGLStart();">
-	<canvas id="WebGL-test" style="border:none;" width="800" height="600"></canvas>
-	<br><br>
-</body>
+						</fieldset>
+					</form>
+				</td>
+			</tr>
+		</table>
 
-	<div id="test"/>
+	</body>
 </html>
