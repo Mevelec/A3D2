@@ -12,6 +12,27 @@ var distCENTER;
 var OBJ1 = null;
 var PLANE = null;
 var CUBEMAP = null;
+var LIGHT = null;
+
+// =====================================================
+// OBJET 3D, representant une lumière
+// =====================================================
+class Light{
+	constructor() {
+		this.position = [0, 0, 0]
+		this.power = [2, 2, 2]
+	}
+
+	// --------------------------------------------
+	setShadersParams(shader) {
+
+		//shader.lPosUniform = gl.getUniformLocation(shader, "ulight_pos");
+		shader.lPowUniform = gl.getUniformLocation(shader, "ulight_pow");
+
+		gl.uniform3fv(shader.lPowUniform, this.power);
+
+	}
+}
 
 // =====================================================
 // OBJET 3D, lecture fichier obj
@@ -48,6 +69,8 @@ class objmesh {
 		this.shader.mvMatrixUniform = gl.getUniformLocation(this.shader, "uMVMatrix");
 		this.shader.pMatrixUniform = gl.getUniformLocation(this.shader, "uPMatrix");
 		this.shader.rsMatrixUniform = gl.getUniformLocation(this.shader, "uRotSkybox");
+
+		LIGHT.setShadersParams(this.shader);
 
 	}
 	
@@ -519,6 +542,8 @@ function webGLStart() {
 	
 	PLANE = new plane();
 	CUBEMAP = new cubemap();
+
+	LIGHT = new Light();
 
 	OBJ1 = new objmesh('objs/cube.obj');
 	//OBJ2 = new objmesh('porsche.obj');

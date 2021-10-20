@@ -13,6 +13,11 @@ varying vec3 Normal;
 uniform mat4 uRotSkybox;
 varying mat3 uRRevese;
 
+// Light
+uniform vec3 ulight_pos;
+uniform vec3 ulight_pow;
+varying vec3 light_pos;
+varying vec3 light_pow;
 
 float transpose(float m) {
   return m;
@@ -94,6 +99,10 @@ mat4 inverse(mat4 m) {
 }
 
 void main(void) {
+
+  light_pos = ulight_pos;
+  light_pow = ulight_pow;
+
 	pos3D = uMVMatrix * vec4(aVertexPosition,1.0);
   
   uRRevese = mat3(inverse(uRotSkybox) * inverse(uRMatrix));

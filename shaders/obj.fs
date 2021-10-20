@@ -11,9 +11,6 @@ varying vec4 pos3D; //position dans le repère camera
 varying vec3 N; //normal de la surface du fragment
 varying vec3 Normal; //normal de la surface du fragment
 
-//environement
-//uniform samplerCube skybox;
-
 // Description du materiau
 vec3 Kd = vec3(0.9, 0.1, 0.1); // couleur
 float SIGMA = 0.1; //
@@ -23,8 +20,8 @@ float Ni = 1.5; //
 vec3 CAM_POS = vec3(0.0);
 
 // description de la source lumineuse
-vec3 LIGHT_POW = vec3(2.0);
-vec3 LIGHT_POS = vec3(0.0);
+varying vec3 light_pos;
+varying vec3 light_pow;
 
 // Skybox
 uniform samplerCube skybox;
@@ -92,11 +89,11 @@ float Attenuation( float dnm, float don, float dom, float din, float dim){
 void main(void)
 {
 	// calcul des vecteurs
-	vec3 i = normalize(LIGHT_POS - vec3(pos3D)); // fragment -> lumière
+	vec3 i = normalize(light_pos - vec3(pos3D)); // fragment -> lumière
 	vec3 o = normalize(CAM_POS - vec3(pos3D));   // fragment -> camera
 	vec3 m = normalize(i+o);
 	
-	vec3 Li = LIGHT_POW; // simple renommage
+	vec3 Li = light_pow; // simple renommage
 	//vec3 Li = vec3(textureCube(skybox, i));
 
 	// calcul  des dot products
@@ -134,7 +131,7 @@ void main(void)
 	vec4 refra_color = textureCube(skybox, refra);
 
 	gl_FragColor =  refra_color;
-	//gl_FragColor = vec4(Lo,1.0);
+	gl_FragColor = vec4(Lo,1.0);
 
 }
 

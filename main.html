@@ -7,7 +7,6 @@
 		<script type="text/javascript" src="js/callbacks.js"></script>
 		<script type="text/javascript" src="js/glCourseBasis.js"></script>
 		<script type="text/javascript" src="js/objLoader.js"></script>
-		<script type="text/javascript" src="js/function.js"></script>
 
 	</head>
 
@@ -23,17 +22,17 @@
 					<form>
 						<fieldset>
 							<legend> Parametrage de la lumiere </legend>
-							<label for="posX">X: </label>
-							<input type="number" step="0.01" id="posX">
+							<label for="posX">R: </label>
+							<input type="number" step="0.01" id="posX" value="2" oninput="LIGHT.power[0] = Number(value)">
 							<br>
-							<label for="posY">Y: </label>
-							<input type="number" step="0.01" id="posY">
+							<label for="posY">G: </label>
+							<input type="number" step="0.01" id="posY" value="2" oninput="LIGHT.power[1] = Number(value)">
 							<br>
-							<label for="posZ">Z: </label>
-							<input type="number" step="0.01" id="posZ">
+							<label for="posZ">B: </label>
+							<input type="number" step="0.01" id="posZ" value="2" oninput="LIGHT.power[2] = Number(value)">
 							<br>
 							<label for="lightColor">Couleur de la lumiere : </label>
-							<input type="color" id="lightColor" name="lightColor" value="#e66465">
+							<input type="color" id="lightColor" name="lightColor" value="#e66465" oninput="console.log(value.convertToRGBA())">
 
 						</fieldset>	
 						<fieldset>
