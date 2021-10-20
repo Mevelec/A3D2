@@ -21,7 +21,7 @@ class objmesh {
 	// --------------------------------------------
 	constructor(objFname) {
 		this.objName = objFname;
-		this.shaderName = 'obj';
+		this.shaderName = 'shaders/obj';
 		this.loaded = -1;
 		this.shader = null;
 		this.mesh = null;
@@ -85,7 +85,7 @@ class plane {
 	
 	// --------------------------------------------
 	constructor() {
-		this.shaderName='plane';
+		this.shaderName='shaders/plane';
 		this.loaded=-1;
 		this.shader=null;
 		this.initAll();
@@ -168,7 +168,7 @@ class cubemap {
 	
 	// --------------------------------------------
 	constructor() {
-		this.shaderName='skybox';
+		this.shaderName='shaders/skybox';
 		this.loaded=-1;
 		this.shader=null;
 		this.initAll();
@@ -520,7 +520,7 @@ function webGLStart() {
 	PLANE = new plane();
 	CUBEMAP = new cubemap();
 
-	OBJ1 = new objmesh('cube.obj');
+	OBJ1 = new objmesh('objs/cube.obj');
 	//OBJ2 = new objmesh('porsche.obj');
 	
 	gl.enable(gl.DEPTH_TEST);
