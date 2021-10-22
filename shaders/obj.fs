@@ -21,7 +21,8 @@ vec3 CAM_POS = vec3(0.0);
 
 // description de la source lumineuse
 varying vec3 v_light_pos;
-varying vec3 v_light_pow;
+varying vec3 v_light_color;
+varying float v_light_pow;
 
 // Skybox
 uniform samplerCube skybox;
@@ -93,7 +94,7 @@ void main(void)
 	vec3 o = normalize(CAM_POS - vec3(pos3D));   // fragment -> camera
 	vec3 m = normalize(i+o);
 	
-	vec3 Li = v_light_pow; // simple renommage
+	vec3 Li = v_light_color * v_light_pow; // simple renommage
 	//vec3 Li = vec3(textureCube(skybox, i));
 
 	// calcul  des dot products

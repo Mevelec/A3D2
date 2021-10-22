@@ -46,7 +46,7 @@ class Light{
 	constructor() {
 		this.position = [0, 0, 0]
 		this.power = 2;
-		this.color = [2, 2, 2]
+		this.color = [1, 0.2, 0.2]
 	}
 
 	// --------------------------------------------
@@ -56,9 +56,9 @@ class Light{
 		shader.lColorUniform = gl.getUniformLocation(shader, "u_light_color");
 		shader.lPowUniform = gl.getUniformLocation(shader, "u_light_pow");
 
-		gl.uniform3fv(shader.lPowUniform, this.position);
+		gl.uniform3fv(shader.lPosUniform, this.position);
 		gl.uniform3fv(shader.lColorUniform, this.color);
-		gl.uniform1f(shader.lPowUniform, this.color);
+		gl.uniform1f(shader.lPowUniform, this.power);
 
 	}
 }
