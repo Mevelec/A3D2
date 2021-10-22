@@ -584,8 +584,8 @@ function webGLStart() {
 	CUBEMAP = new cubemap();
 
 
-	//OBJ1 = new objmesh('objs/cube.obj');
-	OBJ1 = new objmesh('objs/sphere.obj');
+	OBJ1 = new objmesh('objs/cube.obj');
+	//OBJ1 = new objmesh('objs/sphere.obj');
 	//OBJ2 = new objmesh('porsche.obj');
 	
 	gl.enable(gl.DEPTH_TEST);
