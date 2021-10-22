@@ -14,7 +14,7 @@ varying vec3 Normal; //normal de la surface du fragment
 // Description du materiau
 varying vec3 v_Kd; // couleur
 varying float v_sigma; //
-varying float v_Ni; //
+varying float v_Ni; // indice du milieu ~ 1.3 pour l'eau
 varying float v_transmission; //taux de transmission de la refraction
 
 
@@ -84,6 +84,22 @@ float Beckman(float dnm, float v_sigma){
 	return (1.0 / p1) * p2;
 }
 
+float CGX(float dnm, float v_sigma){
+	float sigma2 = v_sigma*v_sigma;
+
+	//calcul de cosTeta4 et tanTheta2
+	float cosTm2 = dnm * dnm;
+    float sinTm2 = 1.0 - cosTm2;
+    float tanTm2 = sinTm2 / cosTm2;
+    float cosTm4 = cosTm2 * cosTm2;
+
+	//calculs partiels
+	float p1 = PI * cosTm4;
+	float p2 = sigma2+tanTm2;
+
+	return sigma2 /( p1 * (p2* p2)) ;
+}
+
 float Attenuation( float dnm, float don, float dom, float din, float dim){
 	return min(min((2.0*dnm*don)/dom, (2.0*dnm*din) / dim), 1.0);
 }
@@ -110,7 +126,7 @@ void main(void)
 
 	// calcul des méthodes
 	float F = Fresnel(v_Ni, dim);
-	float D = Beckman(dnm, v_sigma);
+	float D = CGX(dnm, v_sigma);
 	float G = Attenuation( dnm, don, dom, din, dim);
 	
 	// calcul reflection color
@@ -119,21 +135,18 @@ void main(void)
 	Li += vec3(refl_color);
 
 	// calcul refraction color
-	vec3 refra = u_revese * refract(-i, N, 1.3);
+	vec3 refra = u_revese * refract(-i, N, v_Ni);
 	vec4 refra_color = textureCube(skybox, refra);
 	Kd = Kd*abs(v_transmission -1.0) +  vec3(refra_color) * v_transmission;
 
 	// calculs partiels
-	float Fr1 = 1.0-F;
-	vec3  Fr2 = Kd / PI;
-	float Fr3 = F*D*G;
-	float Fr4 = 4.0	* din * don;
+	float Fr1 = 1.0-F; //diffuse
+	vec3  Fr2 = Kd / PI; //diffuse
+	float Fr3 = (F*D*G) / (4.0	* din * don); //specular 
 
-	vec3 Fr = (Fr1)*(Fr2)+(Fr3)/(Fr4);
+	vec3 Fr = (Fr1)*(Fr2)+Fr3;
 
 	vec3 Lo = Li * Fr * din;
-
-
 
 	gl_FragColor =  refl_color;
 	gl_FragColor = vec4(Lo,1.0);
