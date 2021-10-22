@@ -132,7 +132,7 @@ void main(void)
 	// calcul reflection color
 	vec3 refl =  u_revese * vec3(  reflect(-i, N) );
 	vec4 refl_color = textureCube(skybox, refl);
-	//Li += vec3(refl_color);
+	Li += vec3(refl_color);
 
 	// calcul refraction color
 	vec3 refra = u_revese * refract(-i, N, v_Ni);
