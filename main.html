@@ -40,19 +40,18 @@
 
 						</fieldset>	
 						<fieldset>
-							<legend> Parametrage de la scene </legend>
-							<label for="rotX">Rotation en X : </label>
-							<input type="range" id="rotX" name="rotX" min="0" max="365">
+							<legend> Parametrage du materiau </legend>
+							<label for="Kd">Kd : </label>
+							<input type="color" id="Kd" name="Kd" value="#e66465" oninput="console.log(value.convertToRGBA())">
+							<br>
+							
+							<label for="Sigma">Sigma : </label>
+							<input type="range" step="0.1" id="sigma" name="sigma" min="0" max="1">
 							<br>
 
-							<label for="rotY">Rotation en Y : </label>
-							<input type="range" id="rotY" name="rotY" min="0" max="365">
-							<br>
-							
-							<label for="rotZ">Rotation en Z : </label>
-							<input type="range" id="rotZ" name="rotZ" min="0" max="365">
-							<br>
-							
+							<label for="Ni">Ni : </label>
+							<input type="range" step="0.1" id="Ni" name="Ni" min="0" max="100">
+							<br>							
 							
 						</fieldset>
 						<fieldset> 
