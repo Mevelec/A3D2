@@ -15,6 +15,7 @@ var PLANE = null;
 var CUBEMAP = null;
 var LIGHT = null;
 
+
 // =====================================================
 // OBJET holding a material data
 // =====================================================
@@ -225,8 +226,10 @@ class cubemap {
 		this.shaderName='shaders/skybox';
 		this.loaded=-1;
 		this.shader=null;
+		this.cubemapName = 'Yokohama'
 		this.initAll();
 		
+
 		this.rotMatrix = mat4.create();
 		mat4.identity(this.rotMatrix);
 		mat4.rotate(this.rotMatrix, 1.5708, [1, 0, 0]);
@@ -270,7 +273,7 @@ class cubemap {
 		for(var i = 0; i < 6; i++){
 			this.textures_images[i] = new Image();
 			this.textures_images[i].onload = this.onLoadedImage.bind(this);
-			this.textures_images[i].src = "cubemap_1/"+textures_names[i]+".jpg";
+			this.textures_images[i].src = "textures_cubemap/" + this.cubemapName + "/"+textures_names[i]+".jpg";
 		}
 
 		
