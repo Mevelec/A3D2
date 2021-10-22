@@ -36,7 +36,7 @@ class Material{
 		shader.mSigmaUniform = gl.getUniformLocation(shader, "u_sigma");
 		shader.mNiUniform = gl.getUniformLocation(shader, "u_Ni");
 
-		shader.mModeUniform = gl.getUniformLocation(shader, "u_Mode");
+		shader.mModeUniform = gl.getUniformLocation(shader, "u_mode");
 
 		gl.uniform3fv(shader.mKdUniform, this.Kd);
 		gl.uniform1f(shader.mSigmaUniform, this.sigma);
