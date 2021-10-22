@@ -15,6 +15,16 @@ var CUBEMAP = null;
 var LIGHT = null;
 
 // =====================================================
+// OBJET holding a material data
+// =====================================================
+class Material{
+	constructor(){
+		this.Kd = [0.9, 0.9, 0.9];
+		this.sigma = 0.2;
+		this.Ni = 1.5;
+	}
+}
+// =====================================================
 // OBJET 3D, representant une lumière
 // =====================================================
 class Light{
