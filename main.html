@@ -45,13 +45,41 @@
 
 							<label for="Ni">Ni : </label>
 							<input type="range" step="0.1" id="Ni" name="Ni" min="0" max="100">
-							<br>							
+							<br>	<br>
+							
+							<label for="refraction"> Refraction </label>
+							<input type="radio" name="mode" id="refraction">
+							<br>
+							<label for="reflection"> Reflection </label>
+							<input type="radio" name="mode" id="reflection">
+							<br>
+							<label for="cook_torrance"> Cook & Torrance </label>
+							<input type="radio" name="mode" id="cook_torrance">
 							
 						</fieldset>
 						<fieldset> 
 							<legend> Parametrage de la scene   </legend>
-							<label for="objColor">Couleur de l'objet : </label>
-							<input type="color" id="objColor" name="objColor" value="#e66465">
+							<label for="skymap">Choix de la skymap : </label>
+							<select name="skymap" id="skymap">
+								<option value="skymap1"> skymap1 </option>
+								<option value="skymap2"> skymap2 </option>
+								<option value="skymap3"> skymap3 </option>
+								<option value="skymap4"> skymap4 </option>
+							</select>
+
+							<br>
+
+							<label for="obj3D"> Objet dans la scene : </label>
+							<select name="obj3D" id="obj3D">
+								<option value="obj1"> obj1 </option>
+								<option value="obj2"> obj2 </option>
+								<option value=" obj3"> obj3 </option>
+							</select>
+
+							<br>
+
+							<legend> </legend>
+							
 
 						</fieldset>
 
