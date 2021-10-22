@@ -23,7 +23,7 @@ class Material{
 	constructor(){
 		this.Kd = [1, 1, 1];
 		this.sigma = 0.2;
-		this.Ni = 1.5;
+		this.Ni = 1.3;
 		this.transmission = 0;
 	}
 
@@ -456,6 +456,9 @@ class cubemap {
 // =====================================================
 // FONCTIONS GENERALES, INITIALISATIONS
 // =====================================================
+function changeObj(newOBJ){
+	OBJ1 = new objmesh('objs/' + newOBJ + '.obj');
+}
 
 
 
@@ -589,6 +592,7 @@ function webGLStart() {
 
 	tick();
 }
+
 
 // =====================================================
 function drawScene() {
