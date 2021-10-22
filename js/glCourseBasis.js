@@ -20,7 +20,8 @@ var LIGHT = null;
 class Light{
 	constructor() {
 		this.position = [0, 0, 0]
-		this.power = [2, 2, 2]
+		this.power = 2 
+		this.color = [2, 2, 2]
 	}
 
 	// --------------------------------------------

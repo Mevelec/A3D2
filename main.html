@@ -27,7 +27,7 @@
 						<fieldset>
 							<legend> Parametrage de la lumiere </legend>
 							<label for="posX">R: </label>
-							<input type="number" step="1" id="posX" min="0" max="255" value="2" oninput="LIGHT.power[0] = Number(value)">
+							<input type="number" step="1" id="posX" min="0" max="255" value="2" oninput="LIGHT.position[0] = Number(value)">
 							<br>
 							<label for="posY">G: </label>
 							<input type="number" step="1" id="posY" min="0" max="255" value="2" oninput="LIGHT.power[1] = Number(value)">
@@ -36,7 +36,7 @@
 							<input type="number" step="1" id="posZ" min="0" max="255" value="2" oninput="LIGHT.power[2] = Number(value)">
 							<br>
 							<label for="lightColor">Couleur de la lumiere : </label>
-							<input type="color" id="lightColor" name="lightColor" value="#e66465" oninput="console.log(value.convertToRGBA())">
+							<input type="color" id="lightColor" name="lightColor" value="#e66465" oninput="LIGHT.power = convertRGBA(value) ; console.log(convertRGBA(value))">
 
 						</fieldset>	
 						<fieldset>

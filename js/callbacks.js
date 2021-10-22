@@ -95,3 +95,22 @@ String.prototype.convertToRGBA = function hexToRgbA(hex){
     }
     throw new Error('Bad Hex');
 }
+
+// ====================================================
+function hexToRgb(hex) {
+	var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+	return result ? {
+	  r: parseInt(result[1], 16),
+	  g: parseInt(result[2], 16),
+	  b: parseInt(result[3], 16)
+	} : null;
+  }
+
+  function convertRGBA(value) {
+	  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(value);
+	  return result ? [
+		parseInt(result[1], 16) / 255,
+		parseInt(result[2], 16) / 255,
+		parseInt(result[3], 16) / 255
+	   ] : null;
+  }
