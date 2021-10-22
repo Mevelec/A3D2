@@ -27,7 +27,7 @@
 						<fieldset>
 							<legend> Parametrage de la lumiere </legend>
 							<label for="lightPower">Puissance de la lumiere : </label>
-							<input type="number" step="0.1" id="lightPower" min="0" value="1" oninput="LIGHT.power = Number(value)">
+							<input type="number" step="0.1" id="lightPower" min="0" value="2" oninput="LIGHT.power = Number(value)">
 							<br>
 							<label for="lightColor">Couleur de la lumiere : </label>
 							<input type="color" id="lightColor" name="lightColor" value="#ffffff" oninput="LIGHT.color = convertRGBA(value)">
@@ -44,7 +44,7 @@
 							<br>
 
 							<label for="Ni">indice du milieu (Ni) </label>
-							<input type="range" step="0.01" id="Ni" name="Ni" min="1" max="100" value="1.3" oninput="MATERIAL.Ni = Number(value)">
+							<input type="range" step="0.01" id="Ni" name="Ni" min="0" max="4" value="1.3" oninput="MATERIAL.Ni = Number(value)">
 							<br>	
 							
 							<label for="transmission"> transmission : [ 0;1 ] </label>
