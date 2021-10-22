@@ -95,7 +95,6 @@ void main(void)
 	vec3 m = normalize(i+o);
 	
 	vec3 Li = v_light_color * v_light_pow; // simple renommage
-	//vec3 Li = vec3(textureCube(skybox, i));
 
 	// calcul  des dot products
 	float din = ddot(i, N);
@@ -113,6 +112,7 @@ void main(void)
 	// calcul reflection color
 	vec3 refl =  u_revese * vec3(  reflect(-i, N) );
 	vec4 refl_color = textureCube(skybox, refl);
+	//Li = vec3(refl_color);
 
 	// calcul refraction color
 	vec3 refra = u_revese * refract(-i, N, 1.3);
@@ -131,7 +131,7 @@ void main(void)
 
 
 	gl_FragColor =  refl_color;
-	//gl_FragColor = vec4(Lo,1.0);
+	gl_FragColor = vec4(Lo,1.0);
 }
 
 
