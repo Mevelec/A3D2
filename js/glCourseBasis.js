@@ -9,6 +9,7 @@ var rotMatrix = mat4.create();
 var distCENTER;
 // =====================================================
 
+var MATERIAL = null;
 var OBJ1 = null;
 var PLANE = null;
 var CUBEMAP = null;
@@ -19,11 +20,25 @@ var LIGHT = null;
 // =====================================================
 class Material{
 	constructor(){
-		this.Kd = [0.9, 0.9, 0.9];
+		this.Kd = [0.9, 0.2, 0.2];
 		this.sigma = 0.2;
 		this.Ni = 1.5;
 	}
+
+	// --------------------------------------------
+	setShadersParams(shader) {
+		shader.mKdUniform = gl.getUniformLocation(shader, "u_Kd");
+		shader.mSigmaUniform = gl.getUniformLocation(shader, "u_sigma");
+		shader.mNiUniform = gl.getUniformLocation(shader, "u_Ni");
+
+		gl.uniform3fv(shader.mKdUniform, this.Kd);
+		gl.uniform1f(shader.mSigmaUniform, this.sigma);
+		gl.uniform1f(shader.mNiUniform, this.Ni);
+		
+
+	}
 }
+
 // =====================================================
 // OBJET 3D, representant une lumière
 // =====================================================
@@ -36,8 +51,8 @@ class Light{
 	// --------------------------------------------
 	setShadersParams(shader) {
 
-		//shader.lPosUniform = gl.getUniformLocation(shader, "ulight_pos");
-		shader.lPowUniform = gl.getUniformLocation(shader, "ulight_pow");
+		//shader.lPosUniform = gl.getUniformLocation(shader, "u_light_pos");
+		shader.lPowUniform = gl.getUniformLocation(shader, "u_light_pow");
 
 		gl.uniform3fv(shader.lPowUniform, this.power);
 
@@ -81,6 +96,7 @@ class objmesh {
 		this.shader.rsMatrixUniform = gl.getUniformLocation(this.shader, "uRotSkybox");
 
 		LIGHT.setShadersParams(this.shader);
+		MATERIAL.setShadersParams(this.shader);
 
 	}
 	
@@ -550,10 +566,12 @@ function webGLStart() {
 
 	distCENTER = vec3.create([0,-0.2,-3]);
 	
+	MATERIAL = new Material();
+
 	PLANE = new plane();
+	LIGHT = new Light();
 	CUBEMAP = new cubemap();
 
-	LIGHT = new Light();
 
 	OBJ1 = new objmesh('objs/cube.obj');
 	//OBJ2 = new objmesh('porsche.obj');

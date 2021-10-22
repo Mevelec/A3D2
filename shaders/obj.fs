@@ -12,16 +12,16 @@ varying vec3 N; //normal de la surface du fragment
 varying vec3 Normal; //normal de la surface du fragment
 
 // Description du materiau
-vec3 Kd = vec3(0.9, 0.1, 0.1); // couleur
-float SIGMA = 0.1; //
-float Ni = 1.5; //
+varying vec3 v_Kd; // couleur
+varying float v_sigma; //
+varying float v_Ni; //
 
 // Description de la camera
 vec3 CAM_POS = vec3(0.0);
 
 // description de la source lumineuse
-varying vec3 light_pos;
-varying vec3 light_pow;
+varying vec3 v_light_pos;
+varying vec3 v_light_pow;
 
 // Skybox
 uniform samplerCube skybox;
@@ -55,9 +55,9 @@ float ddot(vec3 a, vec3 b){
 	return max(0.0, dot(a, b));
 }
 
-float Fresnel(float Ni, float dim) {
+float Fresnel(float v_Ni, float dim) {
 	float c = abs(dim);
-	float g = (Ni*Ni) + (c*c) -1.0;
+	float g = (v_Ni*v_Ni) + (c*c) -1.0;
 
 	// calculs partiels pour simplifier la relecture
 	float sqrt_g = sqrt(g); 
@@ -67,7 +67,7 @@ float Fresnel(float Ni, float dim) {
 	return 0.5 * ( (sub_g_c*sub_g_c) / (add_g_c*add_g_c))  *  (1.0 +  ((c*add_g_c -1.0)*(c*add_g_c -1.0)) / ((c*sub_g_c -1.0)*(c*sub_g_c -1.0)) ); 
 }
 
-float Beckman(float dnm, float sigma){
+float Beckman(float dnm, float v_sigma){
 	//calcul de cosTeta4 et tanTheta2
 	float cosTm2 = dnm * dnm;
     float sinTm2 = 1.0 - cosTm2;
@@ -75,8 +75,8 @@ float Beckman(float dnm, float sigma){
     float cosTm4 = cosTm2 * cosTm2;
 
 	//calculs partiels
-	float p1 = PI * (sigma*sigma) * cosTm4;
-	float p2 = exp((-tanTm2)/(2.0*(sigma*sigma)));
+	float p1 = PI * (v_sigma*v_sigma) * cosTm4;
+	float p2 = exp((-tanTm2)/(2.0*(v_sigma*v_sigma)));
 
 	return (1.0 / p1) * p2;
 }
@@ -89,11 +89,11 @@ float Attenuation( float dnm, float don, float dom, float din, float dim){
 void main(void)
 {
 	// calcul des vecteurs
-	vec3 i = normalize(light_pos - vec3(pos3D)); // fragment -> lumière
+	vec3 i = normalize(v_light_pos - vec3(pos3D)); // fragment -> lumière
 	vec3 o = normalize(CAM_POS - vec3(pos3D));   // fragment -> camera
 	vec3 m = normalize(i+o);
 	
-	vec3 Li = light_pow; // simple renommage
+	vec3 Li = v_light_pow; // simple renommage
 	//vec3 Li = vec3(textureCube(skybox, i));
 
 	// calcul  des dot products
@@ -105,13 +105,13 @@ void main(void)
 
 
 	// calcul des méthodes
-	float F = Fresnel(Ni, dim);
-	float D = Beckman(dnm, SIGMA);
+	float F = Fresnel(v_Ni, dim);
+	float D = Beckman(dnm, v_sigma);
 	float G = Attenuation( dnm, don, dom, din, dim);
 	
 	// calculs partiels
 	float Fr1 = 1.0-F;
-	vec3  Fr2 = Kd / PI;
+	vec3  Fr2 = v_Kd / PI;
 	float Fr3 = F*D*G;
 	float Fr4 = 4.0	* din * don;
 

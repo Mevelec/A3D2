@@ -13,11 +13,22 @@ varying vec3 Normal;
 uniform mat4 uRotSkybox;
 varying mat3 uRRevese;
 
+// vecteurs decrivant le fragment/pixel actuel du triangle 
+// Description du materiau
+uniform vec3 u_Kd; // couleur
+uniform float u_sigma; //
+uniform float u_Ni; //
+
+varying vec3 v_Kd; // couleur
+varying float v_sigma; //
+varying float v_Ni; //
+
 // Light
-uniform vec3 ulight_pos;
-uniform vec3 ulight_pow;
-varying vec3 light_pos;
-varying vec3 light_pow;
+uniform vec3 u_light_pos;
+uniform vec3 u_light_pow;
+
+varying vec3 v_light_pos;
+varying vec3 v_light_pow;
 
 float transpose(float m) {
   return m;
@@ -99,9 +110,13 @@ mat4 inverse(mat4 m) {
 }
 
 void main(void) {
+  v_Kd = u_Kd;
+  v_sigma = u_sigma;
+  v_Ni =u_Ni;
 
-  light_pos = ulight_pos;
-  light_pow = ulight_pow;
+
+  v_light_pos = u_light_pos;
+  v_light_pow = u_light_pow;
 
 	pos3D = uMVMatrix * vec4(aVertexPosition,1.0);
   
