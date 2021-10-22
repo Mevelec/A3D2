@@ -45,7 +45,7 @@
 
 							<label for="Ni">Ni : </label>
 							<input type="range" step="0.1" id="Ni" name="Ni" min="0" max="100">
-							<br>	<br>
+							<br><br>
 							
 							<label for="refraction"> Refraction </label>
 							<input type="radio" name="mode" id="refraction">
@@ -61,10 +61,11 @@
 							<legend> Parametrage de la scene   </legend>
 							<label for="skymap">Choix de la skymap : </label>
 							<select name="skymap" id="skymap">
-								<option value="skymap1"> skymap1 </option>
-								<option value="skymap2"> skymap2 </option>
-								<option value="skymap3"> skymap3 </option>
-								<option value="skymap4"> skymap4 </option>
+								<option value="Yokohama" selected=true onclick="CUBEMAP.cubemapName = value; console.log(value)"> Yokohama </option>
+								<option value="Areskutan" onclick="CUBEMAP.cubemapName = value ; CUBEMAP.initAll() "> Areskutan </option>
+								<option value="FortPoint" onclick="CUBEMAP.cubemapName = value ; CUBEMAP.initAll()" > FortPoint </option>
+								<option value="Lycksele" onclick="CUBEMAP.cubemapName = value ; CUBEMAP.initAll()"  > Lycksele </option>
+								<option value="Tantolunden" onclick="CUBEMAP.cubemapName = value ; CUBEMAP.initAll()"> Tantolunden </option>
 							</select>
 
 							<br>

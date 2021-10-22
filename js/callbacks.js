@@ -91,3 +91,4 @@ function handleMouseMove(event) {
 		parseInt(result[3], 16) / 255
 	   ] : null;
   }
+  
