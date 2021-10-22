@@ -13,66 +13,7 @@ varying vec3 Normal;
 uniform mat4 uRotSkybox;
 varying mat3 u_revese;
 
-// vecteurs decrivant le fragment/pixel actuel du triangle 
-// Description du materiau
-uniform vec3 u_Kd; // couleur
-uniform float u_sigma; //
-uniform float u_Ni; //
-uniform float u_transmission;
-
-varying vec3 v_Kd; // couleur
-varying float v_sigma; //
-varying float v_Ni; //
-varying float v_transmission;
-
-
-// Light
-uniform vec3 u_light_pos;
-uniform vec3 u_light_color;
-uniform float u_light_pow;
-
-varying vec3 v_light_pos;
-varying vec3 v_light_color;
-varying float v_light_pow;
-
-float transpose(float m) {
-  return m;
-}
-
-mat2 transpose(mat2 m) {
-  return mat2(m[0][0], m[1][0],
-              m[0][1], m[1][1]);
-}
-
-mat3 transpose(mat3 m) {
-  return mat3(m[0][0], m[1][0], m[2][0],
-              m[0][1], m[1][1], m[2][1],
-              m[0][2], m[1][2], m[2][2]);
-}
-
-mat4 transpose(mat4 m) {
-  return mat4(m[0][0], m[1][0], m[2][0], m[3][0],
-              m[0][1], m[1][1], m[2][1], m[3][1],
-              m[0][2], m[1][2], m[2][2], m[3][2],
-              m[0][3], m[1][3], m[2][3], m[3][3]);
-}
-
-mat3 inverse(mat3 m) {
-  float a00 = m[0][0], a01 = m[0][1], a02 = m[0][2];
-  float a10 = m[1][0], a11 = m[1][1], a12 = m[1][2];
-  float a20 = m[2][0], a21 = m[2][1], a22 = m[2][2];
-
-  float b01 = a22 * a11 - a12 * a21;
-  float b11 = -a22 * a10 + a12 * a20;
-  float b21 = a21 * a10 - a11 * a20;
-
-  float det = a00 * b01 + a01 * b11 + a02 * b21;
-
-  return mat3(b01, (-a22 * a01 + a02 * a21), (a12 * a01 - a02 * a11),
-              b11, (a22 * a00 - a02 * a20), (-a12 * a00 + a02 * a10),
-              b21, (-a21 * a00 + a01 * a20), (a11 * a00 - a01 * a10)) / det;
-}
-
+//------------------
 mat4 inverse(mat4 m) {
   float
       a00 = m[0][0], a01 = m[0][1], a02 = m[0][2], a03 = m[0][3],
@@ -114,16 +55,8 @@ mat4 inverse(mat4 m) {
       a20 * b03 - a21 * b01 + a22 * b00) / det;
 }
 
-void main(void) {
-  v_Kd = u_Kd;
-  v_sigma = u_sigma;
-  v_Ni =u_Ni;
-  v_transmission = u_transmission;
-  
-  v_light_pos = u_light_pos;
-  v_light_color = u_light_color;
-  v_light_pow = u_light_pow;
-
+//------------------
+void main(void) {  
 	pos3D = uMVMatrix * vec4(aVertexPosition,1.0);
   
   u_revese = mat3(inverse(uRotSkybox) * inverse(uRMatrix));
