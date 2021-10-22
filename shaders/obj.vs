@@ -11,18 +11,18 @@ varying vec3 N;
 varying vec3 Normal;
 
 uniform mat4 uRotSkybox;
-varying mat3 uRRevese;
+varying mat3 u_revese;
 
 // vecteurs decrivant le fragment/pixel actuel du triangle 
 // Description du materiau
 uniform vec3 u_Kd; // couleur
 uniform float u_sigma; //
 uniform float u_Ni; //
-uniform int u_Mode;
 
 varying vec3 v_Kd; // couleur
 varying float v_sigma; //
 varying float v_Ni; //
+
 
 // Light
 uniform vec3 u_light_pos;
@@ -117,14 +117,13 @@ void main(void) {
   v_sigma = u_sigma;
   v_Ni =u_Ni;
 
-
   v_light_pos = u_light_pos;
   v_light_color = u_light_color;
   v_light_pow = u_light_pow;
 
 	pos3D = uMVMatrix * vec4(aVertexPosition,1.0);
   
-  uRRevese = mat3(inverse(uRotSkybox) * inverse(uRMatrix));
+  u_revese = mat3(inverse(uRotSkybox) * inverse(uRMatrix));
 	N = normalize( mat3(uRMatrix) * aVertexNormal);
 
 	gl_Position = uPMatrix * pos3D;

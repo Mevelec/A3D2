@@ -40,12 +40,12 @@
 							<br>
 							
 							<label for="Sigma">Sigma : </label>
-							<input type="range" step="0.1" id="sigma" name="sigma" min="0" max="1">
+							<input type="range" step="0.01" id="sigma" name="sigma" min="0" max="1" value="0.2" oninput="MATERIAL.sigma = Number(value) ; console.log(Number(value))">
 							<br>
 
 							<label for="Ni">Ni : </label>
-							<input type="range" step="0.1" id="Ni" name="Ni" min="0" max="100">
-							<br><br>
+							<input type="range" step="0.01" id="Ni" name="Ni" min="1" max="100" value="1.5" oninput="MATERIAL.Ni = Number(value) ; console.log(Number(value))">
+							<br>	<br>
 							
 							<label for="refraction"> Refraction </label>
 							<input type="radio" name="mode" id="refraction">

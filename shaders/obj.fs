@@ -26,7 +26,7 @@ varying float v_light_pow;
 
 // Skybox
 uniform samplerCube skybox;
-varying mat3 uRRevese;
+varying mat3 u_revese;
 
 
 //-------------------- METHODES -------------------
@@ -95,7 +95,6 @@ void main(void)
 	vec3 m = normalize(i+o);
 	
 	vec3 Li = v_light_color * v_light_pow; // simple renommage
-	//vec3 Li = vec3(textureCube(skybox, i));
 
 	// calcul  des dot products
 	float din = ddot(i, N);
@@ -110,6 +109,15 @@ void main(void)
 	float D = Beckman(dnm, v_sigma);
 	float G = Attenuation( dnm, don, dom, din, dim);
 	
+	// calcul reflection color
+	vec3 refl =  u_revese * vec3(  reflect(-i, N) );
+	vec4 refl_color = textureCube(skybox, refl);
+	//Li = vec3(refl_color);
+
+	// calcul refraction color
+	vec3 refra = u_revese * refract(-i, N, 1.3);
+	vec4 refra_color = textureCube(skybox, refra);
+
 	// calculs partiels
 	float Fr1 = 1.0-F;
 	vec3  Fr2 = v_Kd / PI;
@@ -120,20 +128,10 @@ void main(void)
 
 	vec3 Lo = Li * Fr * din;
 
-	//gl_FragColor = vec4(Lo,1.0);
 
-	//temps modifs
-	vec3 I = normalize( vec3(pos3D) - CAM_POS);   // fragment -> camera
 
-	vec3 refl =  uRRevese * vec3(  reflect(I, N) );
-	vec3 refra = uRRevese * refract(I, N, 1.3);
-
-	vec4 refl_color = textureCube(skybox, refl);
-	vec4 refra_color = textureCube(skybox, refra);
-
-	gl_FragColor =  refra_color;
+	gl_FragColor =  refl_color;
 	gl_FragColor = vec4(Lo,1.0);
-
 }
 
 
