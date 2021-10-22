@@ -596,9 +596,7 @@ function webGLStart() {
 
 // =====================================================
 function drawScene() {
-	gl.clear(gl.COLOR_BUFFER_BIT);
-	PLANE.draw();
-	
+	gl.clear(gl.COLOR_BUFFER_BIT);	
 	CUBEMAP.draw();
 	
 	OBJ1.draw();
