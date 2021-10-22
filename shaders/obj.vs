@@ -18,10 +18,12 @@ varying mat3 u_revese;
 uniform vec3 u_Kd; // couleur
 uniform float u_sigma; //
 uniform float u_Ni; //
+varying float u_transmission;
 
 varying vec3 v_Kd; // couleur
 varying float v_sigma; //
 varying float v_Ni; //
+varying float v_transmission;
 
 
 // Light
@@ -116,7 +118,8 @@ void main(void) {
   v_Kd = u_Kd;
   v_sigma = u_sigma;
   v_Ni =u_Ni;
-
+  u_transmission = v_transmission;
+  
   v_light_pos = u_light_pos;
   v_light_color = u_light_color;
   v_light_pow = u_light_pow;

@@ -23,11 +23,7 @@ class Material{
 		this.Kd = [1, 1, 1];
 		this.sigma = 0.2;
 		this.Ni = 1.5;
-		this.mode = 0; 
-		// Mods :
-		//  0 -> default / coock thorence
-		//  1 -> reflect only
-		//  2 -> refract only
+		this.transmission = 0;
 	}
 
 	// --------------------------------------------
@@ -35,14 +31,12 @@ class Material{
 		shader.mKdUniform = gl.getUniformLocation(shader, "u_Kd");
 		shader.mSigmaUniform = gl.getUniformLocation(shader, "u_sigma");
 		shader.mNiUniform = gl.getUniformLocation(shader, "u_Ni");
-
-		shader.mModeUniform = gl.getUniformLocation(shader, "u_mode");
+		shader.mTransmissionsUniform = gl.getUniformLocation(shader, "u_transmission");
 
 		gl.uniform3fv(shader.mKdUniform, this.Kd);
 		gl.uniform1f(shader.mSigmaUniform, this.sigma);
 		gl.uniform1f(shader.mNiUniform, this.Ni);
-
-		gl.uniform1i(shader.mModeUniform, this.mode);
+		gl.uniform1f(shader.mTransmissionsUniform, this.transmission);
 	}
 }
 
@@ -584,7 +578,8 @@ function webGLStart() {
 	CUBEMAP = new cubemap();
 
 
-	OBJ1 = new objmesh('objs/cube.obj');
+	//OBJ1 = new objmesh('objs/cube.obj');
+	OBJ1 = new objmesh('objs/sphere.obj');
 	//OBJ2 = new objmesh('porsche.obj');
 	
 	gl.enable(gl.DEPTH_TEST);

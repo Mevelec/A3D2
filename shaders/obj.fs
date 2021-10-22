@@ -15,6 +15,8 @@ varying vec3 Normal; //normal de la surface du fragment
 varying vec3 v_Kd; // couleur
 varying float v_sigma; //
 varying float v_Ni; //
+varying float v_transmission; //taux de transmission de la refraction
+
 
 // Description de la camera
 vec3 CAM_POS = vec3(0.0);
@@ -94,7 +96,9 @@ void main(void)
 	vec3 o = normalize(CAM_POS - vec3(pos3D));   // fragment -> camera
 	vec3 m = normalize(i+o);
 	
-	vec3 Li = v_light_color * v_light_pow; // simple renommage
+	// simple renommages
+	vec3 Li = v_light_color * v_light_pow; 
+	vec3 Kd = v_Kd;
 
 	// calcul  des dot products
 	float din = ddot(i, N);
@@ -112,15 +116,16 @@ void main(void)
 	// calcul reflection color
 	vec3 refl =  u_revese * vec3(  reflect(-i, N) );
 	vec4 refl_color = textureCube(skybox, refl);
-	//Li = vec3(refl_color);
+	Li += vec3(refl_color);
 
 	// calcul refraction color
 	vec3 refra = u_revese * refract(-i, N, 1.3);
 	vec4 refra_color = textureCube(skybox, refra);
+	Kd = Kd*abs(v_transmission -1.0) +  vec3(refra_color) * v_transmission;
 
 	// calculs partiels
 	float Fr1 = 1.0-F;
-	vec3  Fr2 = v_Kd / PI;
+	vec3  Fr2 = Kd / PI;
 	float Fr3 = F*D*G;
 	float Fr4 = 4.0	* din * don;
 
