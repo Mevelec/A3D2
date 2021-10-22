@@ -1,13 +1,8 @@
-kd -> couleur
-Sigma
-Ni
+TODO :
+echantillonage montécarlo a faire
 
-indice de refraction
+Commenter le code
+formater le code ( separateurs avant fonctions etc ... pour plaire au prof)
 
-type de  rendu
-
-Light color ( 0 a )
-light pos
-
-select model
-select skymap
+skymap Yokohama ne fonctionne pas
+plan invisible toujours présent
