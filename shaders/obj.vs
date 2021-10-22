@@ -18,6 +18,7 @@ varying mat3 uRRevese;
 uniform vec3 u_Kd; // couleur
 uniform float u_sigma; //
 uniform float u_Ni; //
+uniform int u_Mode;
 
 varying vec3 v_Kd; // couleur
 varying float v_sigma; //

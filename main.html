@@ -36,13 +36,13 @@
 							<input type="number" step="1" id="posZ" min="0" max="255" value="2" oninput="LIGHT.power[2] = Number(value)">
 							<br>
 							<label for="lightColor">Couleur de la lumiere : </label>
-							<input type="color" id="lightColor" name="lightColor" value="#e66465" oninput="LIGHT.color = convertRGBA(value) ; console.log(convertRGBA(value))">
+							<input type="color" id="lightColor" name="lightColor" value="#ffffff" oninput="LIGHT.color = convertRGBA(value) ; console.log(convertRGBA(value))">
 
 						</fieldset>	
 						<fieldset>
 							<legend> Parametrage du materiau </legend>
 							<label for="Kd">Kd : </label>
-							<input type="color" id="Kd" name="Kd" value="#e66465" oninput="console.log(value.convertToRGBA())">
+							<input type="color" id="Kd" name="Kd" value="#ffffff" oninput="MATERIAL.color = convertRGBA(value) ; console.log(convertRGBA(value))">
 							<br>
 							
 							<label for="Sigma">Sigma : </label>

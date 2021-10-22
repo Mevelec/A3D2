@@ -20,9 +20,14 @@ var LIGHT = null;
 // =====================================================
 class Material{
 	constructor(){
-		this.Kd = [0.9, 0.2, 0.2];
+		this.Kd = [1, 1, 1];
 		this.sigma = 0.2;
 		this.Ni = 1.5;
+		this.mode = 0; 
+		// Mods :
+		//  0 -> default / coock thorence
+		//  1 -> reflect only
+		//  2 -> refract only
 	}
 
 	// --------------------------------------------
@@ -31,11 +36,13 @@ class Material{
 		shader.mSigmaUniform = gl.getUniformLocation(shader, "u_sigma");
 		shader.mNiUniform = gl.getUniformLocation(shader, "u_Ni");
 
+		shader.mModeUniform = gl.getUniformLocation(shader, "u_Mode");
+
 		gl.uniform3fv(shader.mKdUniform, this.Kd);
 		gl.uniform1f(shader.mSigmaUniform, this.sigma);
 		gl.uniform1f(shader.mNiUniform, this.Ni);
-		
 
+		gl.uniform1i(shader.mModeUniform, this.mode);
 	}
 }
 
@@ -46,7 +53,7 @@ class Light{
 	constructor() {
 		this.position = [0, 0, 0]
 		this.power = 2;
-		this.color = [1, 0.2, 0.2]
+		this.color = [1, 1, 1]
 	}
 
 	// --------------------------------------------
