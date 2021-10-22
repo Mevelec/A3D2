@@ -25,9 +25,11 @@ varying float v_Ni; //
 
 // Light
 uniform vec3 u_light_pos;
+uniform vec3 u_light_color;
 uniform vec3 u_light_pow;
 
 varying vec3 v_light_pos;
+varying vec3 v_light_color;
 varying vec3 v_light_pow;
 
 float transpose(float m) {

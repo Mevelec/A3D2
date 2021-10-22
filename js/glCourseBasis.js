@@ -45,17 +45,20 @@ class Material{
 class Light{
 	constructor() {
 		this.position = [0, 0, 0]
-		this.power = 2 
+		this.power = 2;
 		this.color = [2, 2, 2]
 	}
 
 	// --------------------------------------------
 	setShadersParams(shader) {
 
-		//shader.lPosUniform = gl.getUniformLocation(shader, "u_light_pos");
+		shader.lPosUniform = gl.getUniformLocation(shader, "u_light_pos");
+		shader.lColorUniform = gl.getUniformLocation(shader, "u_light_color");
 		shader.lPowUniform = gl.getUniformLocation(shader, "u_light_pow");
 
-		gl.uniform3fv(shader.lPowUniform, this.power);
+		gl.uniform3fv(shader.lPowUniform, this.position);
+		gl.uniform3fv(shader.lColorUniform, this.color);
+		gl.uniform1f(shader.lPowUniform, this.color);
 
 	}
 }
