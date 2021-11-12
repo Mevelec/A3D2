@@ -14,6 +14,7 @@ var OBJ1 = null;
 var PLANE = null;
 var CUBEMAP = null;
 var LIGHT = null;
+var TIME = 0;
 
 
 // =====================================================
@@ -33,11 +34,13 @@ class Material{
 		shader.mSigmaUniform = gl.getUniformLocation(shader, "u_sigma");
 		shader.mNiUniform = gl.getUniformLocation(shader, "u_Ni");
 		shader.mTransmissionsUniform = gl.getUniformLocation(shader, "u_transmission");
+		shader.uTime = gl.getUniformLocation(shader, "u_time");
 
 		gl.uniform3fv(shader.mKdUniform, this.Kd);
 		gl.uniform1f(shader.mSigmaUniform, this.sigma);
 		gl.uniform1f(shader.mNiUniform, this.Ni);
 		gl.uniform1f(shader.mTransmissionsUniform, this.transmission);
+		gl.uniform1f(shader.uTime, TIME);
 	}
 }
 
@@ -596,6 +599,8 @@ function webGLStart() {
 
 // =====================================================
 function drawScene() {
+	TIME += 1;
+
 	gl.clear(gl.COLOR_BUFFER_BIT);	
 	CUBEMAP.draw();
 	

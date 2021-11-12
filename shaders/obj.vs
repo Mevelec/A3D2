@@ -60,6 +60,7 @@ void main(void) {
 	pos3D = uMVMatrix * vec4(aVertexPosition,1.0);
   
   u_revese = mat3(inverse(uRotSkybox) * inverse(uRMatrix));
+  Normal = aVertexNormal;
 	N = normalize( mat3(uRMatrix) * aVertexNormal);
 
 	gl_Position = uPMatrix * pos3D;
