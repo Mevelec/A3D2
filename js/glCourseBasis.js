@@ -15,7 +15,6 @@ var PLANE = null;
 var CUBEMAP = null;
 var LIGHT = null;
 var TIME = 0;
-var DISTRIB = 0;
 
 // =====================================================
 // OBJET holding a material data
@@ -43,7 +42,7 @@ class Material{
 		gl.uniform1f(shader.mNiUniform, this.Ni);
 		gl.uniform1f(shader.mTransmissionsUniform, this.transmission);
 		gl.uniform1f(shader.uTime, TIME);
-		gl.uniform1f(shader.uDistrib, DISTRIB);
+		gl.uniform1f(shader.uDistrib, this.uDistrib);
 	}
 }
 
