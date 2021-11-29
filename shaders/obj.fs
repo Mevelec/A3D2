@@ -8,6 +8,7 @@ varying vec3 N;      //normal de la surface du fragment
 
 // Description du materiau
 uniform float u_Distrib;      // mode de distribution
+uniform float u_Sample; 	  // nombre d'echantillon
 uniform vec3 u_Kd;            // couleur
 uniform float u_sigma;        // roughness du materiau
 uniform float u_Ni;           // indice du milieu ~ 1.3 pour l'eau
@@ -153,8 +154,15 @@ void main(void)
 	rand = Random(rand, u_time);
 	float x = Random(rand, 1.0);
 	float y = Random(rand, 0.0);
-	const float SAMPLES = 1.0;
-	for(float i = 0.0; i < SAMPLES; i++) {
+	
+	
+
+	for(float i = 0.0; i < 10000.0; i++) {
+
+		if (i >= u_Sample){
+			break;
+		}
+
 		float x = Random(rand, i);
 		float y = Random(rand, i);
 

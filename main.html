@@ -63,13 +63,21 @@
 						</fieldset>
 
 						<fieldset>
-							<legend> Mode de la scene : </legend>
+							<legend> Parametres de rendu  </legend>
 							<label for="mode"> Mode : </label>
 							<select name="mode" id="mode">
 								<option value=0 selected=true onclick="MATERIAL.uDistrib = value;"> Ggx </option>
 								<option value=1 onclick="MATERIAL.uDistrib = value;"> Beckman </option>
 							</select>
+
+							<br>
+
+							
+							<label for="sample">Nombre d'echantillon :  </label><br>
+							<input type="number" step="1"  id="sample" min="0" value="10" oninput="MATERIAL.sample = value;">
+							<br>
 						</fieldset>
+
 
 						<fieldset> 
 							<legend> Parametrage de la scene   </legend>

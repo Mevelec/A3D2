@@ -25,7 +25,8 @@ class Material{
 		this.sigma = 0.2;
 		this.Ni = 1.3;
 		this.transmission = 0;
-		this.uDistrib = 0;
+		this.distrib = 0;
+		this.sample = 10;
 	}
 
 	// --------------------------------------------
@@ -36,13 +37,16 @@ class Material{
 		shader.mTransmissionsUniform = gl.getUniformLocation(shader, "u_transmission");
 		shader.uTime = gl.getUniformLocation(shader, "u_time");
 		shader.uDistrib = gl.getUniformLocation(shader, "u_Distrib");
+		shader.uSample = gl.getUniformLocation(shader, "u_Sample");
 
 		gl.uniform3fv(shader.mKdUniform, this.Kd);
 		gl.uniform1f(shader.mSigmaUniform, this.sigma);
 		gl.uniform1f(shader.mNiUniform, this.Ni);
 		gl.uniform1f(shader.mTransmissionsUniform, this.transmission);
 		gl.uniform1f(shader.uTime, TIME);
-		gl.uniform1f(shader.uDistrib, this.uDistrib);
+		gl.uniform1f(shader.uDistrib, this.distrib);
+		gl.uniform1f(shader.uSample, this.sample);
+
 	}
 }
 
