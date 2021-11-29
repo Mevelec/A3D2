@@ -29,7 +29,7 @@ uniform float u_light_pow;
 uniform samplerCube skybox;
 varying mat3 u_revese;
 
-// Time
+// Timelog
 uniform float u_time;
 
 
@@ -123,6 +123,25 @@ vec3 ImportanceSampleGGX(vec2 Xi, vec3 N, float roughness)
     return normalize(sampleVec);
 }
 
+vec3 ImportanceSampleBeckman(vec2 Xi, vec3 N, float roughness){
+	float phi = Xi.x * 2.0 * PI;
+	float teta = atan( sqrt(-(roughness * roughness) * log(1.0 - Xi.y)));
+
+	// from spherical coordinates to cartesian coordinates
+	vec3 H;
+	H.x = cos(phi) * sin(teta);
+	H.y = sin(phi) * sin(teta);
+	H.z = cos(teta);
+
+	// from tangent-space vector to world-space sample vector
+	vec3 up        = abs(N.z) < 0.999 ? vec3(0.0, 0.0, 1.0) : vec3(1.0, 0.0, 0.0);
+	vec3 tangent   = normalize(cross(up, N));
+	vec3 bitangent = cross(N, tangent);
+
+	vec3 sampleVec = tangent * H.x + bitangent * H.y + N * H.z;
+	return normalize(sampleVec);
+}
+
 // ==============================================
 void main(void)
 {
@@ -142,7 +161,7 @@ void main(void)
 		x = x*2.0*PI;
 		y = atan(sqrt(- (u_sigma*u_sigma) * log( 1.0-y)));
 		
-		vec3 H = ImportanceSampleGGX(vec2(x, y), N, u_sigma);
+		vec3 H = ImportanceSampleBeckman(vec2(x, y), N, u_sigma);
 		vec3 Lu  = normalize(2.0 * dot(N, H) * H - N);
 
 		float NdotL = max(dot(N, Lu), 0.0);
@@ -169,7 +188,7 @@ void main(void)
 
 			// calcul des méthodes
 			float F = Fresnel(u_Ni, dim);
-			float D = GGX(dnm, u_sigma);
+			float D = Beckman(dnm, u_sigma);
 			float G = Attenuation( dnm, don, dom, din, dim);
 			
 			// calcul reflection color skymap
@@ -190,7 +209,7 @@ void main(void)
 			vec3 Fr = (Fr1)*(Fr2)+Fr3; //specular + diffuse
 
 			vec3 Lo = Li * Fr * din;
-			cumul += Lu;
+			cumul += Lo;
 		}
 	}
 	cumul /= totalWeight;
