@@ -1,36 +1,32 @@
-// Ralise par le binome :
-// MEVELEC Adrien
-// PARMENTIER Michael
-
 precision mediump float;
 
 float PI = 3.1415926535897932384626433832795;
 
 // vecteurs decrivant le fragment/pixel actuel du triangle 
-varying vec4 pos3D; //position dans le repère camera
-varying vec3 N; //normal de la surface du fragment
-varying vec3 Normal; //normal de la surface du fragment
+varying vec4 pos3D;  //position dans le repère camera
+varying vec3 N;      //normal de la surface du fragment
 
 // Description du materiau
-uniform vec3 u_Kd; // couleur
-uniform float u_sigma; //
-uniform float u_Ni; // indice du milieu ~ 1.3 pour l'eau
+uniform float u_Distrib;      // mode de distribution
+uniform vec3 u_Kd;            // couleur
+uniform float u_sigma;        // roughness du materiau
+uniform float u_Ni;           // indice du milieu ~ 1.3 pour l'eau
 uniform float u_transmission; //taux de transmission de la refraction
 
 // Description de la camera
-vec3 CAM_POS = vec3(0.0);
+vec3 CAM_POS = vec3(0.0); //position
 
 // description de la source lumineuse
-uniform vec3 u_light_pos;
-uniform vec3 u_light_color;
-uniform float u_light_pow;
+uniform vec3 u_light_pos;    // position de la source
+uniform vec3 u_light_color;  // couleur de la lumière emise
+uniform float u_light_pow;   // puissance de la lumière
 
 // description de la Skybox
-uniform samplerCube skybox;
-varying mat3 u_revese;
+uniform samplerCube skybox;  // sampler de la cube map
+varying mat3 u_revese;	     // matrice de correction de la transformation pour la cube map
 
 // Timelog
-uniform float u_time;
+uniform float u_time;        // temps actuel utilisé pour le sampling
 
 
 //-------------------- METHODES -------------------
@@ -54,12 +50,12 @@ float Fresnel(float u_Ni, float dim) {
 }
 
 //--------------------
-float Beckman(float dnm, float u_sigma){
+float DistributionBeckman(float dnm, float u_sigma){
 	//calcul de cosTeta4 et tanTheta2
 	float cosTm2 = dnm * dnm;
-    float sinTm2 = 1.0 - cosTm2;
-    float tanTm2 = sinTm2 / cosTm2;
-    float cosTm4 = cosTm2 * cosTm2;
+	float sinTm2 = 1.0 - cosTm2;
+	float tanTm2 = sinTm2 / cosTm2;
+	float cosTm4 = cosTm2 * cosTm2;
 
 	//calculs partiels
 	float p1 = PI * (u_sigma*u_sigma) * cosTm4;
@@ -69,14 +65,14 @@ float Beckman(float dnm, float u_sigma){
 }
 
 //--------------------
-float GGX(float dnm, float u_sigma){
+float DistributionGGX(float dnm, float u_sigma){
 	float sigma2 = u_sigma*u_sigma;
 
 	//calcul de cosTeta4 et tanTheta2
 	float cosTm2 = dnm * dnm;
-    float sinTm2 = 1.0 - cosTm2;
-    float tanTm2 = sinTm2 / cosTm2;
-    float cosTm4 = cosTm2 * cosTm2;
+	float sinTm2 = 1.0 - cosTm2;
+	float tanTm2 = sinTm2 / cosTm2;
+	float cosTm4 = cosTm2 * cosTm2;
 
 	//calculs partiels
 	float p1 = PI * cosTm4;
@@ -90,7 +86,9 @@ float Attenuation( float dnm, float don, float dom, float din, float dim){
 	return min(min((2.0*dnm*don)/dom, (2.0*dnm*din) / dim), 1.0);
 }
 
-float random(float x, float y)
+//--------------------
+// method to generate a "random" number
+float Random(float x, float y)
 {
     highp float a = 12.9898;
     highp float b = 78.233;
@@ -100,6 +98,7 @@ float random(float x, float y)
     return fract(sin(sn) * c);
 }
 
+//--------------------
 vec3 ImportanceSampleGGX(vec2 Xi, vec3 N, float roughness)
 {
     float a = roughness*roughness;
@@ -123,6 +122,7 @@ vec3 ImportanceSampleGGX(vec2 Xi, vec3 N, float roughness)
     return normalize(sampleVec);
 }
 
+//--------------------
 vec3 ImportanceSampleBeckman(vec2 Xi, vec3 N, float roughness){
 	float phi = Xi.x * 2.0 * PI;
 	float teta = atan( sqrt(-(roughness * roughness) * log(1.0 - Xi.y)));
@@ -148,25 +148,31 @@ void main(void)
 	float totalWeight = 0.0;   
 	float rand = 0.0;
 	vec3 cumul = vec3(0.0);	
-	rand = random(pos3D.x, pos3D.y);
-	rand = random(rand, pos3D.z);
-	rand = random(rand, u_time);
-	float x = random(rand, 1.0);
-	float y = random(rand, 0.0);
+	rand = Random(pos3D.x, pos3D.y);
+	rand = Random(rand, pos3D.z);
+	rand = Random(rand, u_time);
+	float x = Random(rand, 1.0);
+	float y = Random(rand, 0.0);
 	const float SAMPLES = 1.0;
 	for(float i = 0.0; i < SAMPLES; i++) {
-		float x = random(rand, i);
-		float y = random(rand, i);
+		float x = Random(rand, i);
+		float y = Random(rand, i);
 
 		x = x*2.0*PI;
 		y = atan(sqrt(- (u_sigma*u_sigma) * log( 1.0-y)));
 		
 		vec3 H = ImportanceSampleBeckman(vec2(x, y), N, u_sigma);
+		if(u_Distrib == 1.0){
+			H = ImportanceSampleBeckman(vec2(x, y), N, u_sigma);
+		}
+		else {
+			H = ImportanceSampleGGX(vec2(x, y), N, u_sigma);
+		}
 		vec3 Lu  = normalize(2.0 * dot(N, H) * H - N);
 
 		float NdotL = max(dot(N, Lu), 0.0);
-        if(NdotL > 0.0)
-        {
+		if(NdotL > 0.0)
+		{
 			totalWeight      += NdotL;
 			
 			// calcul des vecteurs
@@ -188,7 +194,13 @@ void main(void)
 
 			// calcul des méthodes
 			float F = Fresnel(u_Ni, dim);
-			float D = Beckman(dnm, u_sigma);
+			float D = DistributionBeckman(dnm, u_sigma);
+			if(u_Distrib == 1.0){
+				D = DistributionBeckman(dnm, u_sigma);
+			}
+			else {
+				D = DistributionGGX(dnm, u_sigma);
+			}
 			float G = Attenuation( dnm, don, dom, din, dim);
 			
 			// calcul reflection color skymap
@@ -214,7 +226,6 @@ void main(void)
 	}
 	cumul /= totalWeight;
 	gl_FragColor = vec4(cumul, 1.0);
-	//gl_FragColor = vec4(Lo,1.0);
 }
 
 
