@@ -1,6 +1,7 @@
 // Ralise par le binome :
 // MEVELEC Adrien
 // PARMENTIER Michael
+// HAMMAS Ali-Cherif
 
 precision mediump float;
 
@@ -77,6 +78,8 @@ void main(void)
 	Kd =   vec3(refra_color);
 
 	// calculs partiels
+	// set u_mix to 0 for total transmission
+	// set u_mix to 1 for total reflexion
 	vec3 Fr2 = (1.0-F-u_mix)*(Kd); //transmitted
 	vec3 Fr3 = vec3(F+u_mix*refl_color); //reflected 
 

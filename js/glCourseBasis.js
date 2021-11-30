@@ -31,22 +31,11 @@ class Material{
 
 	// --------------------------------------------
 	setShadersParams(shader) {
-		shader.mKdUniform = gl.getUniformLocation(shader, "u_Kd");
-		shader.mSigmaUniform = gl.getUniformLocation(shader, "u_sigma");
 		shader.mNiUniform = gl.getUniformLocation(shader, "u_Ni");
 		shader.mTransmissionsUniform = gl.getUniformLocation(shader, "u_mix");
-		shader.uTime = gl.getUniformLocation(shader, "u_time");
-		shader.uDistrib = gl.getUniformLocation(shader, "u_Distrib");
-		shader.uSample = gl.getUniformLocation(shader, "u_Sample");
 
-		gl.uniform3fv(shader.mKdUniform, this.Kd);
-		gl.uniform1f(shader.mSigmaUniform, this.sigma);
 		gl.uniform1f(shader.mNiUniform, this.Ni);
 		gl.uniform1f(shader.mTransmissionsUniform, this.transmission);
-		gl.uniform1f(shader.uTime, TIME);
-		gl.uniform1f(shader.uDistrib, this.distrib);
-		gl.uniform1f(shader.uSample, this.sample);
-
 	}
 }
 
