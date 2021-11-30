@@ -55,10 +55,7 @@ void main(void)
 	vec3 i = normalize(u_light_pos - vec3(pos3D)); // fragment -> lumière
 	vec3 o = normalize(CAM_POS - vec3(pos3D));   // fragment -> camera
 	vec3 m = normalize(i+o);
-	
-	// simple renommages
-	vec3 Kd = vec3(0.0, 0.0, 0.0);
-	vec3 Li = u_light_color * u_light_pow; 
+
 
 	// calcul  des dot products
 	float dim = ddot(i, m);
@@ -70,20 +67,27 @@ void main(void)
 	// calcul reflection color skymap
 	vec3 refl =  u_revese * vec3(  reflect(-i, N) );
 	vec4 refl_color = textureCube(skybox, refl);
-	Li += vec3(refl_color);
+	vec3 Li = vec3(refl_color);
 
 	// calcul refraction color skymap
 	vec3 refra = u_revese * refract(-i, N, u_Ni);
 	vec4 refra_color = textureCube(skybox, refra);
-	Kd =   vec3(refra_color);
+	vec3 Kd =  vec3(refra_color);
 
 	// calculs partiels
-	// set u_mix to 0 for total transmission
-	// set u_mix to 1 for total reflexion
-	vec3 Fr2 = (1.0-F-u_mix)*(Kd); //transmitted
-	vec3 Fr3 = vec3(F+u_mix*refl_color); //reflected 
+	vec3 Fr2 = (1.0-F)*(Kd); //transmitted
+	vec3 Fr3 = vec3(F*Li); //reflected 
 
-	vec3 Lo = Fr2 + Fr3;
+	vec3 Lo;
+	if(u_mix == 0.0){
+		Lo = Kd;
+	}
+	else if(u_mix == 0.5){
+		Lo = Fr2 + Fr3;
+	}
+	else {
+		Lo = Li;
+	}
 
 	gl_FragColor = vec4(Lo,1.0);
 }

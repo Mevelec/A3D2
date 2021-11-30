@@ -13,7 +13,6 @@ var MATERIAL = null;
 var OBJ1 = null;
 var PLANE = null;
 var CUBEMAP = null;
-var LIGHT = null;
 var TIME = 0;
 
 // =====================================================
@@ -99,7 +98,6 @@ class objmesh {
 		this.shader.pMatrixUniform = gl.getUniformLocation(this.shader, "uPMatrix");
 		this.shader.rsMatrixUniform = gl.getUniformLocation(this.shader, "uRotSkybox");
 
-		LIGHT.setShadersParams(this.shader);
 		MATERIAL.setShadersParams(this.shader);
 
 	}
@@ -224,7 +222,7 @@ class cubemap {
 		this.shaderName='shaders/skybox';
 		this.loaded=-1;
 		this.shader=null;
-		this.cubemapName = 'Yokohama'
+		this.cubemapName = 'Lycksele'
 		this.initAll();
 		
 
@@ -578,7 +576,6 @@ function webGLStart() {
 	MATERIAL = new Material();
 
 	PLANE = new plane();
-	LIGHT = new Light();
 	CUBEMAP = new cubemap();
 
 	OBJ1 = new objmesh('objs/sphere.obj');

@@ -8,7 +8,6 @@ uniform mat4 uPMatrix;
 
 varying vec4 pos3D;
 varying vec3 N;
-varying vec3 Normal;
 
 
 uniform mat4 uRotSkybox;
@@ -61,7 +60,6 @@ void main(void) {
 	pos3D = uMVMatrix * vec4(aVertexPosition,1.0);
   
   u_revese = mat3(inverse(uRotSkybox) * inverse(uRMatrix));
-  Normal = aVertexNormal;
 	N = normalize( mat3(uRMatrix) * aVertexNormal);
 
 	gl_Position = uPMatrix * pos3D;
