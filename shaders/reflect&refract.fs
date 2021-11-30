@@ -15,7 +15,7 @@ varying vec3 Normal; //normal de la surface du fragment
 uniform vec3 u_Kd; // couleur
 uniform float u_sigma; //
 uniform float u_Ni; // indice du milieu ~ 1.3 pour l'eau
-uniform float u_transmission; //taux de transmission de la refraction
+uniform float u_mix; //taux de transmission de la refraction
 
 // Description de la camera
 vec3 CAM_POS = vec3(0.0);

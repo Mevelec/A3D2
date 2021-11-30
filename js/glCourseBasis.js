@@ -34,7 +34,7 @@ class Material{
 		shader.mKdUniform = gl.getUniformLocation(shader, "u_Kd");
 		shader.mSigmaUniform = gl.getUniformLocation(shader, "u_sigma");
 		shader.mNiUniform = gl.getUniformLocation(shader, "u_Ni");
-		shader.mTransmissionsUniform = gl.getUniformLocation(shader, "u_transmission");
+		shader.mTransmissionsUniform = gl.getUniformLocation(shader, "u_mix");
 		shader.uTime = gl.getUniformLocation(shader, "u_time");
 		shader.uDistrib = gl.getUniformLocation(shader, "u_Distrib");
 		shader.uSample = gl.getUniformLocation(shader, "u_Sample");
