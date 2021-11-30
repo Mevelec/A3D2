@@ -219,16 +219,16 @@ void main(void)
 			float G = Attenuation( dnm, don, dom, din, dim);
 			
 			// calcul reflection color skymap
-			vec3 refl =  vec3(  reflect(-i, Lu) );
-    		refl = FromTangeanteToWorld(N, refl);
+			vec3 refl =  u_revese * vec3(  reflect(-i, Lu) );
 			vec4 refl_color = textureCube(skybox, refl);
 			Li += vec3(refl_color);
 
 			// calcul refraction color skymap
-			vec3 refra = refract(-i, Lu, u_Ni); // maybe try same as in Importance function from tangeant e to world space
-			refl = FromTangeanteToWorld(N, refra);
+			vec3 refra = u_revese * refract(-i, Lu, u_Ni); // maybe try same as in Importance function from tangeant e to world space
 			vec4 refra_color = textureCube(skybox, refra);
-			Kd = Kd*abs(u_transmission -1.0) +  vec3(refra_color) * u_transmission;
+			Kd = vec3(refra_color);
+			// Line to mix reflected color with aborbed color
+			Kd = u_Kd*abs(u_transmission -1.0) +  vec3(refra_color) * u_transmission;
 
 			// calculs partiels
 			float Fr1 = 1.0-F; //diffuse
