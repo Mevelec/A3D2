@@ -100,8 +100,22 @@ float Random(float x, float y)
 }
 
 //--------------------
+vec3 FromTangeanteToWorld(vec3 N, vec3 vec){
+    vec3 up        = vec3(0.0, 1.0, 0.0); // world up is (0, 0, 1)
+	if(dot(N, up) > 0.999){
+		up = vec3(0.0, 0.0, 1.0);
+	}
+    vec3 tangent   = normalize(cross(up, N));
+    vec3 bitangent = cross(N, tangent);
+	
+    vec3 sampleVec = tangent * vec.x + bitangent * vec.y + N * vec.z;
+    return normalize(sampleVec);	
+}
+
+//--------------------
 vec3 ImportanceSampleGGX(vec2 Xi, vec3 N, float roughness)
 {
+	//from Disney pixar publication paper about PBR shading
     float a = roughness*roughness;
 	
     float phi = 2.0 * PI * Xi.x;
@@ -113,14 +127,8 @@ vec3 ImportanceSampleGGX(vec2 Xi, vec3 N, float roughness)
     H.x = cos(phi) * sinTheta;
     H.y = sin(phi) * sinTheta;
     H.z = cosTheta;
-	
-    // from tangent-space vector to world-space sample vector
-    vec3 up        = abs(N.z) < 0.999 ? vec3(0.0, 0.0, 1.0) : vec3(1.0, 0.0, 0.0);
-    vec3 tangent   = normalize(cross(up, N));
-    vec3 bitangent = cross(N, tangent);
-	
-    vec3 sampleVec = tangent * H.x + bitangent * H.y + N * H.z;
-    return normalize(sampleVec);
+
+    return FromTangeanteToWorld(N, H);
 }
 
 //--------------------
@@ -134,41 +142,37 @@ vec3 ImportanceSampleBeckman(vec2 Xi, vec3 N, float roughness){
 	H.y = sin(phi) * sin(teta);
 	H.z = cos(teta);
 
-	// from tangent-space vector to world-space sample vector
-	vec3 up        = abs(N.z) < 0.999 ? vec3(0.0, 0.0, 1.0) : vec3(1.0, 0.0, 0.0);
-	vec3 tangent   = normalize(cross(up, N));
-	vec3 bitangent = cross(N, tangent);
-
-	vec3 sampleVec = tangent * H.x + bitangent * H.y + N * H.z;
-	return normalize(sampleVec);
+    return FromTangeanteToWorld(N, H);
 }
 
 // ==============================================
 void main(void)
 {
-	float totalWeight = 0.0;   
+	float totalWeight = 0.0;    
 	float rand = 0.0;
 	vec3 cumul = vec3(0.0);	
+
+	// create random based on time and direction
 	rand = Random(pos3D.x, pos3D.y);
 	rand = Random(rand, pos3D.z);
-	rand = Random(rand, u_time);
-	float x = Random(rand, 1.0);
-	float y = Random(rand, 0.0);
+	rand = Random(rand, u_time);	
 	
-	
-
+	// foreach sample
 	for(float i = 0.0; i < 10000.0; i++) {
-
+		// break loop when the number of sample is reached
+		// must be made  like this because of opengl version not allowing  dynamic loops (conditionnal should be constant)
 		if (i >= u_Sample){
 			break;
 		}
 
+		// create randoms
 		float x = Random(rand, i);
 		float y = Random(rand, i);
 
 		x = x*2.0*PI;
 		y = atan(sqrt(- (u_sigma*u_sigma) * log( 1.0-y)));
 		
+		// calculate Importance
 		vec3 H = ImportanceSampleBeckman(vec2(x, y), N, u_sigma);
 		if(u_Distrib == 1.0){
 			H = ImportanceSampleBeckman(vec2(x, y), N, u_sigma);
@@ -176,12 +180,15 @@ void main(void)
 		else {
 			H = ImportanceSampleGGX(vec2(x, y), N, u_sigma);
 		}
-		vec3 Lu  = normalize(2.0 * dot(N, H) * H - N);
 
-		float NdotL = max(dot(N, Lu), 0.0);
+
+		vec3 Lu  = normalize(2.0 * dot(N, H) * H - N);
+		float NdotL = ddot(N, Lu);
+
+		// check if microfacet participate to lighting
 		if(NdotL > 0.0)
 		{
-			totalWeight      += NdotL;
+			totalWeight      += NdotL; 
 			
 			// calcul des vecteurs
 			vec3 i = normalize(u_light_pos - vec3(pos3D)); // fragment -> lumière
@@ -203,7 +210,7 @@ void main(void)
 			// calcul des méthodes
 			float F = Fresnel(u_Ni, dim);
 			float D = DistributionBeckman(dnm, u_sigma);
-			if(u_Distrib == 1.0){
+			if(u_Distrib == 1.0){ //use correct Distribution
 				D = DistributionBeckman(dnm, u_sigma);
 			}
 			else {
@@ -212,12 +219,14 @@ void main(void)
 			float G = Attenuation( dnm, don, dom, din, dim);
 			
 			// calcul reflection color skymap
-			vec3 refl =  u_revese * vec3(  reflect(-i, Lu) );
+			vec3 refl =  vec3(  reflect(-i, Lu) );
+    		refl = FromTangeanteToWorld(N, refl);
 			vec4 refl_color = textureCube(skybox, refl);
 			Li += vec3(refl_color);
 
 			// calcul refraction color skymap
-			vec3 refra = u_revese * refract(-i, Lu, u_Ni);
+			vec3 refra = refract(-i, Lu, u_Ni); // maybe try same as in Importance function from tangeant e to world space
+			refl = FromTangeanteToWorld(N, refra);
 			vec4 refra_color = textureCube(skybox, refra);
 			Kd = Kd*abs(u_transmission -1.0) +  vec3(refra_color) * u_transmission;
 
@@ -229,11 +238,10 @@ void main(void)
 			vec3 Fr = (Fr1)*(Fr2)+Fr3; //specular + diffuse
 
 			vec3 Lo = Li * Fr * din;
-			cumul += Lo;
+			cumul += Lo/NdotL;
 		}
 	}
-	cumul /= totalWeight;
-	gl_FragColor = vec4(cumul, 1.0);
+	gl_FragColor = vec4(cumul/u_Sample, 1.0);
 }
 
 
