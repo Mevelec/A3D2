@@ -105,10 +105,19 @@ class objmesh {
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.mesh.normalBuffer);
 		gl.vertexAttribPointer(this.shader.nAttrib, this.mesh.vertexBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
+		
+		this.shader.texCoordsAttrib = gl.getAttribLocation(this.shader, "aVertexTextureCoords");
+		gl.enableVertexAttribArray(this.shader.texCoordsAttrib);
+		gl.bindBuffer(gl.ARRAY_BUFFER, this.mesh.textureBuffer);
+		gl.vertexAttribPointer(this.shader.texCoordsAttrib, this.mesh.textureBuffer.itemSize, gl.FLOAT, false, 0, 0);
+		
+
 		this.shader.rMatrixUniform = gl.getUniformLocation(this.shader, "uRMatrix");
 		this.shader.mvMatrixUniform = gl.getUniformLocation(this.shader, "uMVMatrix");
 		this.shader.pMatrixUniform = gl.getUniformLocation(this.shader, "uPMatrix");
 		this.shader.rsMatrixUniform = gl.getUniformLocation(this.shader, "uRotSkybox");
+
+		this.shader.textCords = gl.getAttribLocation(this.shader, "aVertexTexCoords");
 
 		LIGHT.setShadersParams(this.shader);
 		MATERIAL.setShadersParams(this.shader);
@@ -592,7 +601,7 @@ function webGLStart() {
 	LIGHT = new Light();
 	CUBEMAP = new cubemap();
 
-	OBJ1 = new objmesh('objs/sphere.obj');
+	OBJ1 = new objmesh('objs/sphere_2.obj');
 	
 	gl.enable(gl.DEPTH_TEST);
 

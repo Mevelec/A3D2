@@ -1,6 +1,7 @@
 
 attribute vec3 aVertexPosition;
 attribute vec3 aVertexNormal;
+attribute vec2 aVertexTextureCoords;
 
 uniform mat4 uRMatrix;
 uniform mat4 uMVMatrix;
@@ -8,6 +9,9 @@ uniform mat4 uPMatrix;
 
 varying vec4 pos3D;
 varying vec3 N;
+
+varying vec2 texCoords;
+
 varying vec3 Normal;
 
 
@@ -59,7 +63,7 @@ mat4 inverse(mat4 m) {
 //------------------
 void main(void) {  
 	pos3D = uMVMatrix * vec4(aVertexPosition,1.0);
-  
+  texCoords = aVertexTextureCoords;
   u_revese = mat3(inverse(uRotSkybox) * inverse(uRMatrix));
   Normal = aVertexNormal;
 	N = normalize( mat3(uRMatrix) * aVertexNormal);

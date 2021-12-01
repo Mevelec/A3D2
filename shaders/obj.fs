@@ -4,6 +4,7 @@ float PI = 3.1415926535897932384626433832795;
 
 // vecteurs decrivant le fragment/pixel actuel du triangle 
 varying vec4 pos3D;  //position dans le repère camera
+varying vec2 texCoords;  //position dans le repère camera
 varying vec3 N;      //normal de la surface du fragment
 
 // Description du materiau
