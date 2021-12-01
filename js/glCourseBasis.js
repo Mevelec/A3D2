@@ -56,7 +56,7 @@ class Material{
 class Light{
 	constructor() {
 		this.position = [0, 0, 0]
-		this.power = 2;
+		this.power = 0;
 		this.color = [1, 1, 1]
 	}
 
@@ -593,8 +593,8 @@ function webGLStart() {
 	CUBEMAP = new cubemap();
 
 
-	OBJ1 = new objmesh('objs/cube.obj');
-	//OBJ1 = new objmesh('objs/sphere.obj');
+	//OBJ1 = new objmesh('objs/cube.obj');
+	OBJ1 = new objmesh('objs/sphere.obj');
 	//OBJ2 = new objmesh('porsche.obj');
 	
 	gl.enable(gl.DEPTH_TEST);
