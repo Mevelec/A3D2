@@ -1,19 +1,20 @@
 
-attribute vec3 aVertexPosition;
-attribute vec3 aVertexNormal;
+attribute vec3 a_VertexPosition;
+attribute vec3 a_VertexNormal;
 
-uniform mat4 uRMatrix;
-uniform mat4 uMVMatrix;
-uniform mat4 uPMatrix;
+uniform mat4 u_RMatrix;
+uniform mat4 u_MVMatrix;
+uniform mat4 u_PMatrix;
 
-varying vec4 pos3D;
-varying vec3 N;
+varying vec4 v_pos3D;
+varying vec3 v_N;
 
 
-uniform mat4 uRotSkybox;
-varying mat3 u_revese;
+uniform mat4 u_RotSkybox; // rotation de la skybox pour correspondre au coordonnees monde
+varying mat3 v_reverse; // ne devrait pas etre utilisé en varrying mais devrait etre passé en uniforme pour plus d'optimisation
 
 //------------------
+// calcul l'inverse de la matrice m
 mat4 inverse(mat4 m) {
   float
       a00 = m[0][0], a01 = m[0][1], a02 = m[0][2], a03 = m[0][3],
@@ -57,10 +58,10 @@ mat4 inverse(mat4 m) {
 
 //------------------
 void main(void) {  
-	pos3D = uMVMatrix * vec4(aVertexPosition,1.0);
+	v_pos3D = u_MVMatrix * vec4(a_VertexPosition,1.0);
   
-  u_revese = mat3(inverse(uRotSkybox) * inverse(uRMatrix));
-	N = normalize( mat3(uRMatrix) * aVertexNormal);
+  v_reverse = mat3(inverse(u_RotSkybox) * inverse(u_RMatrix));
+	v_N = normalize( mat3(u_RMatrix) * a_VertexNormal);
 
-	gl_Position = uPMatrix * pos3D;
+	gl_Position = u_PMatrix * v_pos3D;
 }

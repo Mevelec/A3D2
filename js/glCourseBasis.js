@@ -39,30 +39,6 @@ class Material{
 }
 
 // =====================================================
-// OBJET 3D, representant une lumière
-// =====================================================
-class Light{
-	constructor() {
-		this.position = [0, 0, 0]
-		this.power = 0;
-		this.color = [1, 1, 1]
-	}
-
-	// --------------------------------------------
-	setShadersParams(shader) {
-
-		shader.lPosUniform = gl.getUniformLocation(shader, "u_light_pos");
-		shader.lColorUniform = gl.getUniformLocation(shader, "u_light_color");
-		shader.lPowUniform = gl.getUniformLocation(shader, "u_light_pow");
-
-		gl.uniform3fv(shader.lPosUniform, this.position);
-		gl.uniform3fv(shader.lColorUniform, this.color);
-		gl.uniform1f(shader.lPowUniform, this.power);
-
-	}
-}
-
-// =====================================================
 // OBJET 3D, lecture fichier obj
 // =====================================================
 class objmesh {
@@ -83,20 +59,20 @@ class objmesh {
 	setShadersParams() {
 		gl.useProgram(this.shader);
 
-		this.shader.vAttrib = gl.getAttribLocation(this.shader, "aVertexPosition");
+		this.shader.vAttrib = gl.getAttribLocation(this.shader, "a_VertexPosition");
 		gl.enableVertexAttribArray(this.shader.vAttrib);
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.mesh.vertexBuffer);
 		gl.vertexAttribPointer(this.shader.vAttrib, this.mesh.vertexBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
-		this.shader.nAttrib = gl.getAttribLocation(this.shader, "aVertexNormal");
+		this.shader.nAttrib = gl.getAttribLocation(this.shader, "a_VertexNormal");
 		gl.enableVertexAttribArray(this.shader.nAttrib);
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.mesh.normalBuffer);
 		gl.vertexAttribPointer(this.shader.nAttrib, this.mesh.vertexBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
-		this.shader.rMatrixUniform = gl.getUniformLocation(this.shader, "uRMatrix");
-		this.shader.mvMatrixUniform = gl.getUniformLocation(this.shader, "uMVMatrix");
-		this.shader.pMatrixUniform = gl.getUniformLocation(this.shader, "uPMatrix");
-		this.shader.rsMatrixUniform = gl.getUniformLocation(this.shader, "uRotSkybox");
+		this.shader.rMatrixUniform = gl.getUniformLocation(this.shader, "u_RMatrix");
+		this.shader.mvMatrixUniform = gl.getUniformLocation(this.shader, "u_MVMatrix");
+		this.shader.pMatrixUniform = gl.getUniformLocation(this.shader, "u_PMatrix");
+		this.shader.rsMatrixUniform = gl.getUniformLocation(this.shader, "u_RotSkybox");
 
 		MATERIAL.setShadersParams(this.shader);
 
@@ -179,7 +155,7 @@ class plane {
 	setShadersParams() {
 		gl.useProgram(this.shader);
 
-		this.shader.vAttrib = gl.getAttribLocation(this.shader, "aVertexPosition");
+		this.shader.vAttrib = gl.getAttribLocation(this.shader, "a_VertexPosition");
 		gl.enableVertexAttribArray(this.shader.vAttrib);
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.vBuffer);
 		gl.vertexAttribPointer(this.shader.vAttrib, this.vBuffer.itemSize, gl.FLOAT, false, 0, 0);
@@ -189,8 +165,8 @@ class plane {
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.tBuffer);
 		gl.vertexAttribPointer(this.shader.tAttrib,this.tBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
-		this.shader.pMatrixUniform = gl.getUniformLocation(this.shader, "uPMatrix");
-		this.shader.mvMatrixUniform = gl.getUniformLocation(this.shader, "uMVMatrix");
+		this.shader.pMatrixUniform = gl.getUniformLocation(this.shader, "u_PMatrix");
+		this.shader.mvMatrixUniform = gl.getUniformLocation(this.shader, "u_MVMatrix");
 
 		mat4.identity(mvMatrix);
 		mat4.translate(mvMatrix, distCENTER);
@@ -405,7 +381,7 @@ class cubemap {
 	setShadersParams() {
 		gl.useProgram(this.shader);
 
-		this.shader.vAttrib = gl.getAttribLocation(this.shader, "aVertexPosition");
+		this.shader.vAttrib = gl.getAttribLocation(this.shader, "a_VertexPosition");
 		gl.enableVertexAttribArray(this.shader.vAttrib);
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.vBuffer);
 		gl.vertexAttribPointer(this.shader.vAttrib, this.vBuffer.itemSize, gl.FLOAT, false, 0, 0);
@@ -415,10 +391,10 @@ class cubemap {
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.tBuffer);
 		gl.vertexAttribPointer(this.shader.tAttrib,this.tBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
-		this.shader.rMatrixUniform = gl.getUniformLocation(this.shader, "uRMatrix");
-		this.shader.pMatrixUniform = gl.getUniformLocation(this.shader, "uPMatrix");
-		this.shader.mvMatrixUniform = gl.getUniformLocation(this.shader, "uMVMatrix");
-		this.shader.rsMatrixUniform = gl.getUniformLocation(this.shader, "uRotSkybox");
+		this.shader.rMatrixUniform = gl.getUniformLocation(this.shader, "u_RMatrix");
+		this.shader.pMatrixUniform = gl.getUniformLocation(this.shader, "u_PMatrix");
+		this.shader.mvMatrixUniform = gl.getUniformLocation(this.shader, "u_MVMatrix");
+		this.shader.rsMatrixUniform = gl.getUniformLocation(this.shader, "u_RotSkybox");
 
 		mat4.identity(mvMatrix);
 		mat4.translate(mvMatrix, distCENTER);
