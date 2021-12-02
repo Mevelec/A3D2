@@ -3,9 +3,9 @@ precision mediump float;
 float PI = 3.1415926535897932384626433832795;
 
 // vecteurs decrivant le fragment/pixel actuel du triangle 
-varying vec4 pos3D;  //position dans le repère camera
-varying vec2 texCoords;  //position dans le repère camera
-varying vec3 N;      //normal de la surface du fragment
+varying vec4 v_pos3D;  //position dans le repère camera
+varying vec2 v_texCoords;  //position dans le repère camera
+varying vec3 v_N;      //normal de la surface du fragment
 
 // Description du materiau
 uniform float u_Distrib;      // mode de distribution
@@ -18,6 +18,8 @@ uniform float u_transmission; //taux de transmission de la refraction
 // Description de la camera
 vec3 CAM_POS = vec3(0.0); //position
 
+
+// TODO : delete 
 // description de la source lumineuse
 uniform vec3 u_light_pos;    // position de la source
 uniform vec3 u_light_color;  // couleur de la lumière emise
@@ -31,7 +33,9 @@ varying mat3 u_revese;	     // matrice de correction de la transformation pour l
 uniform float u_time;        // temps actuel utilisé pour le sampling
 
 
-//-------------------- METHODES -------------------
+// ==============================================
+//                    OUTILS
+// ==============================================
 //--------------------
 // dot product entre 0 et +
 float ddot(vec3 a, vec3 b){
@@ -39,6 +43,32 @@ float ddot(vec3 a, vec3 b){
 }
 
 //--------------------
+// method to generate a "random" number
+float Random(float x, float y)
+{
+    highp float a = 12.9898;
+    highp float b = 78.233;
+    highp float c = 43758.5453;
+    highp float dt= dot(vec2(x, y),vec2(a,b));
+    highp float sn= mod(dt,3.14);
+    return fract(sin(sn) * c);
+}
+
+//--------------------
+vec3 FromTangeanteToWorld(vec3 v_N, vec3 vec){
+    vec3 up        = vec3(0.0, 1.0, 0.0); // world up is (0, 0, 1)
+	if(dot(v_N, up) > 0.999){
+		up = vec3(0.0, 0.0, 1.0);
+	}
+    vec3 tangent   = normalize(cross(up, v_N));
+    vec3 bitangent = cross(v_N, tangent);
+	
+    vec3 sampleVec = tangent * vec.x + bitangent * vec.y + v_N * vec.z;
+    return normalize(sampleVec);	
+}
+
+//--------------------
+// calcul du coefficient de fresnel
 float Fresnel(float u_Ni, float dim) {
 	float c = abs(dim);
 	float g = (u_Ni*u_Ni) + (c*c) -1.0;
@@ -51,6 +81,15 @@ float Fresnel(float u_Ni, float dim) {
 	return 0.5 * ( (sub_g_c*sub_g_c) / (add_g_c*add_g_c))  *  (1.0 +  ((c*add_g_c -1.0)*(c*add_g_c -1.0)) / ((c*sub_g_c -1.0)*(c*sub_g_c -1.0)) ); 
 }
 
+//--------------------
+float Attenuation( float dnm, float don, float dom, float din, float dim){
+	return min(min((2.0*dnm*don)/dom, (2.0*dnm*din) / dim), 1.0);
+}
+
+
+// ==============================================
+//                    Beckman
+// ==============================================
 //--------------------
 float DistributionBeckman(float dnm, float u_sigma){
 	//calcul de cosTeta4 et tanTheta2
@@ -66,6 +105,23 @@ float DistributionBeckman(float dnm, float u_sigma){
 	return (1.0 / p1) * p2;
 }
 
+//--------------------
+vec3 ImportanceSampleBeckman(vec2 Xi, vec3 v_N, float roughness){
+	float phi = Xi.x * 2.0 * PI;
+	float teta = atan( sqrt(-(roughness * roughness) * log(1.0 - Xi.y)));
+
+	// from spherical coordinates to cartesian coordinates
+	vec3 H;
+	H.x = cos(phi) * sin(teta);
+	H.y = sin(phi) * sin(teta);
+	H.z = cos(teta);
+
+    return FromTangeanteToWorld(v_N, H);
+}
+
+// ==============================================
+//                     GGX
+// ==============================================
 //--------------------
 float DistributionGGX(float dnm, float u_sigma){
 	float sigma2 = u_sigma*u_sigma;
@@ -84,37 +140,7 @@ float DistributionGGX(float dnm, float u_sigma){
 }
 
 //--------------------
-float Attenuation( float dnm, float don, float dom, float din, float dim){
-	return min(min((2.0*dnm*don)/dom, (2.0*dnm*din) / dim), 1.0);
-}
-
-//--------------------
-// method to generate a "random" number
-float Random(float x, float y)
-{
-    highp float a = 12.9898;
-    highp float b = 78.233;
-    highp float c = 43758.5453;
-    highp float dt= dot(vec2(x, y),vec2(a,b));
-    highp float sn= mod(dt,3.14);
-    return fract(sin(sn) * c);
-}
-
-//--------------------
-vec3 FromTangeanteToWorld(vec3 N, vec3 vec){
-    vec3 up        = vec3(0.0, 1.0, 0.0); // world up is (0, 0, 1)
-	if(dot(N, up) > 0.999){
-		up = vec3(0.0, 0.0, 1.0);
-	}
-    vec3 tangent   = normalize(cross(up, N));
-    vec3 bitangent = cross(N, tangent);
-	
-    vec3 sampleVec = tangent * vec.x + bitangent * vec.y + N * vec.z;
-    return normalize(sampleVec);	
-}
-
-//--------------------
-vec3 ImportanceSampleGGX(vec2 Xi, vec3 N, float roughness)
+vec3 ImportanceSampleGGX(vec2 Xi, vec3 v_N, float roughness)
 {
 	//from Disney pixar publication paper about PBR shading
     float a = roughness*roughness;
@@ -129,34 +155,29 @@ vec3 ImportanceSampleGGX(vec2 Xi, vec3 N, float roughness)
     H.y = sin(phi) * sinTheta;
     H.z = cosTheta;
 
-    return FromTangeanteToWorld(N, H);
+    return FromTangeanteToWorld(v_N, H);
 }
 
-//--------------------
-vec3 ImportanceSampleBeckman(vec2 Xi, vec3 N, float roughness){
-	float phi = Xi.x * 2.0 * PI;
-	float teta = atan( sqrt(-(roughness * roughness) * log(1.0 - Xi.y)));
 
-	// from spherical coordinates to cartesian coordinates
-	vec3 H;
-	H.x = cos(phi) * sin(teta);
-	H.y = sin(phi) * sin(teta);
-	H.z = cos(teta);
-
-    return FromTangeanteToWorld(N, H);
-}
-
+// ==============================================
+//                   MAIN 
 // ==============================================
 void main(void)
 {
 	float totalWeight = 0.0;    
-	float rand = 0.0;
 	vec3 cumul = vec3(0.0);	
 
+	vec3 o = normalize(CAM_POS - vec3(v_pos3D));   // fragment -> camera
+
+	// calcul  des dot products du fragment
+	float don = ddot(o, v_N);
+
 	// create random based on time and direction
-	rand = Random(pos3D.x, pos3D.y);
-	rand = Random(rand, pos3D.z);
+	float rand = 0.0;
+	rand = Random(v_pos3D.x, v_pos3D.y);
+	rand = Random(rand, v_pos3D.z);
 	rand = Random(rand, u_time);	
+	
 	
 	// foreach sample
 	for(float i = 0.0; i < 10000.0; i++) {
@@ -168,49 +189,36 @@ void main(void)
 
 		// create randoms
 		float x = Random(rand, i);
-		float y = Random(rand, i);
-
-		x = x*2.0*PI;
-		y = atan(sqrt(- (u_sigma*u_sigma) * log( 1.0-y)));
-		
+		float y = Random(rand, i*8.0);
+				
 		// calculate Importance
-		vec3 H = ImportanceSampleBeckman(vec2(x, y), N, u_sigma);
+		vec3 m = ImportanceSampleBeckman(vec2(x, y), v_N, u_sigma);
 		if(u_Distrib == 1.0){
-			H = ImportanceSampleBeckman(vec2(x, y), N, u_sigma);
+			m = ImportanceSampleBeckman(vec2(x, y), v_N, u_sigma);
 		}
 		else {
-			H = ImportanceSampleGGX(vec2(x, y), N, u_sigma);
+			m = ImportanceSampleGGX(vec2(x, y), v_N, u_sigma);
 		}
 
-
-		vec3 Lu  = normalize(2.0 * dot(N, H) * H - N);
-		float NdotL = ddot(N, Lu);
+		float NdotL = ddot(v_N, m);
 
 		// check if microfacet participate to lighting
 		if(NdotL > 0.0)
 		{
-			totalWeight      += NdotL; 
-			
-			// calcul des vecteurs
-			vec3 i = normalize(u_light_pos - vec3(pos3D)); // fragment -> lumière
-			vec3 o = normalize(CAM_POS - vec3(pos3D));   // fragment -> camera
-			vec3 m = normalize(i+o);
-			
-			// simple renommages
-			vec3 Li = u_light_color * u_light_pow; 
-			vec3 Kd = u_Kd;
+			totalWeight += NdotL; 
 
-			// calcul  des dot products
-			float din = ddot(i, N);
-			float don = ddot(o, N);
+			// calcul de la direction de la lumiere reflechie
+			vec3 i = normalize(vec3(-o+2.0*v_N*(ddot(o, v_N)))); // fragment -> lumière (vecteur symetrique a la normale)
+
+			// calcul  des dot products de la microfacette
+			float din = ddot(i, v_N);
 			float dim = ddot(i, m);
 			float dom = ddot(o, m);
-			float dnm = ddot(N, m);
-
+			float dnm = ddot(v_N, m);
 
 			// calcul des méthodes
 			float F = Fresnel(u_Ni, dim);
-			float D = DistributionBeckman(dnm, u_sigma);
+			float D;
 			if(u_Distrib == 1.0){ //use correct Distribution
 				D = DistributionBeckman(dnm, u_sigma);
 			}
@@ -220,26 +228,23 @@ void main(void)
 			float G = Attenuation( dnm, don, dom, din, dim);
 			
 			// calcul reflection color skymap
-			vec3 refl =  u_revese * vec3(  reflect(-i, Lu) );
-			vec4 refl_color = textureCube(skybox, refl);
-			Li += vec3(refl_color);
+			vec3 refl =  u_revese * vec3(  i);
+			vec3 refl_color = vec3(textureCube(skybox, refl));
 
 			// calcul refraction color skymap
-			vec3 refra = u_revese * refract(-i, Lu, u_Ni); // maybe try same as in Importance function from tangeant e to world space
-			vec4 refra_color = textureCube(skybox, refra);
-			Kd = vec3(refra_color);
+			vec3 refra = u_revese * refract(i, m, u_Ni);
+			vec3 refra_color = vec3(textureCube(skybox, refra));
+
 			// Line to mix reflected color with aborbed color
-			Kd = u_Kd*abs(u_transmission -1.0) +  vec3(refra_color) * u_transmission;
+			vec3 Kd = u_Kd*(1.0-u_transmission) + vec3(refra_color)*u_transmission; // ligne pour manibuler l'opacite du materiau
+			//vec3 Kd = vec3(refra_color); // line to use clear glass
 
 			// calculs partiels
-			float Fr1 = 1.0-F; //diffuse
-			vec3  Fr2 = Kd / PI; //diffuse
-			float Fr3 = (F*D*G) / (4.0	* din * don); //specular 
+			vec3 diffuse_BRDF = (1.0-F)*(Kd / PI);
+			vec3 specular_BRDF = vec3((F*D*G) / (4.0 * din * don));
 
-			vec3 Fr = (Fr1)*(Fr2)+Fr3; //specular + diffuse
-
-			vec3 Lo = Li * Fr * din;
-			cumul += Lo/NdotL;
+			vec3 Lo = refl_color * (diffuse_BRDF + specular_BRDF) * din;
+			cumul += vec3(Lo)/NdotL;
 		}
 	}
 	gl_FragColor = vec4(cumul/u_Sample, 1.0);

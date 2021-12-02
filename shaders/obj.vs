@@ -1,19 +1,16 @@
 
-attribute vec3 aVertexPosition;
-attribute vec3 aVertexNormal;
-attribute vec2 aVertexTextureCoords;
+attribute vec3 a_VertexPosition;
+attribute vec3 a_VertexNormal;
+attribute vec2 a_VertexTextureCoords;
 
-uniform mat4 uRMatrix;
-uniform mat4 uMVMatrix;
-uniform mat4 uPMatrix;
+uniform mat4 u_RMatrix;
+uniform mat4 u_MVMatrix;
+uniform mat4 u_PMatrix;
 
-varying vec4 pos3D;
-varying vec3 N;
+varying vec4 v_pos3D;
+varying vec3 v_N;
 
-varying vec2 texCoords;
-
-varying vec3 Normal;
-
+varying vec2 v_texCoords;
 
 uniform mat4 uRotSkybox;
 varying mat3 u_revese;
@@ -62,11 +59,10 @@ mat4 inverse(mat4 m) {
 
 //------------------
 void main(void) {  
-	pos3D = uMVMatrix * vec4(aVertexPosition,1.0);
-  texCoords = aVertexTextureCoords;
-  u_revese = mat3(inverse(uRotSkybox) * inverse(uRMatrix));
-  Normal = aVertexNormal;
-	N = normalize( mat3(uRMatrix) * aVertexNormal);
+	v_pos3D = u_MVMatrix * vec4(a_VertexPosition,1.0);
+  v_texCoords = a_VertexTextureCoords;
+  u_revese = mat3(inverse(uRotSkybox) * inverse(u_RMatrix));
+	v_N = normalize( mat3(u_RMatrix) * a_VertexNormal);
 
-	gl_Position = uPMatrix * pos3D;
+	gl_Position = u_PMatrix * v_pos3D;
 }

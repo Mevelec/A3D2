@@ -7,8 +7,8 @@ precision mediump float;
 float PI = 3.1415926535897932384626433832795;
 
 // vecteurs decrivant le fragment/pixel actuel du triangle 
-varying vec4 pos3D; //position dans le repère camera
-varying vec3 N; //normal de la surface du fragment
+varying vec4 v_pos3D; //position dans le repère camera
+varying vec3 v_N; //normal de la surface du fragment
 varying vec3 Normal; //normal de la surface du fragment
 
 // Description du materiau
@@ -54,8 +54,8 @@ float Fresnel(float u_Ni, float dim) {
 void main(void)
 {
 	// calcul des vecteurs
-	vec3 i = normalize(u_light_pos - vec3(pos3D)); // fragment -> lumière
-	vec3 o = normalize(CAM_POS - vec3(pos3D));   // fragment -> camera
+	vec3 i = normalize(u_light_pos - vec3(v_pos3D)); // fragment -> lumière
+	vec3 o = normalize(CAM_POS - vec3(v_pos3D));   // fragment -> camera
 	vec3 m = normalize(i+o);
 	
 	// simple renommages
@@ -70,12 +70,12 @@ void main(void)
 	float F = Fresnel(u_Ni, dim);
 	
 	// calcul reflection color skymap
-	vec3 refl =  u_revese * vec3(  reflect(-i, N) );
+	vec3 refl =  u_revese * vec3(  reflect(-i, v_N) );
 	vec4 refl_color = textureCube(skybox, refl);
 	Li += vec3(refl_color);
 
 	// calcul refraction color skymap
-	vec3 refra = u_revese * refract(-i, N, u_Ni);
+	vec3 refra = u_revese * refract(-i, v_N, u_Ni);
 	vec4 refra_color = textureCube(skybox, refra);
 	Kd =   vec3(refra_color);
 

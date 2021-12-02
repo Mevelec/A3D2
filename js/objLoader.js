@@ -325,10 +325,10 @@
    *     ...
    *     // make sure you have vertex, vertex normal, and texture coordinate
    *     // attributes located in your shaders and attach them to the shader program
-   *     shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "aVertexPosition");
+   *     shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "a_VertexPosition");
    *     gl.enableVertexAttribArray(shaderProgram.vertexPositionAttribute);
    *
-   *     shaderProgram.vertexNormalAttribute = gl.getAttribLocation(shaderProgram, "aVertexNormal");
+   *     shaderProgram.vertexNormalAttribute = gl.getAttribLocation(shaderProgram, "a_VertexNormal");
    *     gl.enableVertexAttribArray(shaderProgram.vertexNormalAttribute);
    *
    *     shaderProgram.textureCoordAttribute = gl.getAttribLocation(shaderProgram, "aTextureCoord");

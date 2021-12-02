@@ -95,26 +95,26 @@ class objmesh {
 	setShadersParams() {
 		gl.useProgram(this.shader);
 
-		this.shader.vAttrib = gl.getAttribLocation(this.shader, "aVertexPosition");
+		this.shader.vAttrib = gl.getAttribLocation(this.shader, "a_VertexPosition");
 		gl.enableVertexAttribArray(this.shader.vAttrib);
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.mesh.vertexBuffer);
 		gl.vertexAttribPointer(this.shader.vAttrib, this.mesh.vertexBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
-		this.shader.nAttrib = gl.getAttribLocation(this.shader, "aVertexNormal");
+		this.shader.nAttrib = gl.getAttribLocation(this.shader, "a_VertexNormal");
 		gl.enableVertexAttribArray(this.shader.nAttrib);
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.mesh.normalBuffer);
 		gl.vertexAttribPointer(this.shader.nAttrib, this.mesh.vertexBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
 		
-		this.shader.texCoordsAttrib = gl.getAttribLocation(this.shader, "aVertexTextureCoords");
+		this.shader.texCoordsAttrib = gl.getAttribLocation(this.shader, "a_VertexTextureCoords");
 		gl.enableVertexAttribArray(this.shader.texCoordsAttrib);
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.mesh.textureBuffer);
 		gl.vertexAttribPointer(this.shader.texCoordsAttrib, this.mesh.textureBuffer.itemSize, gl.FLOAT, false, 0, 0);
 		
 
-		this.shader.rMatrixUniform = gl.getUniformLocation(this.shader, "uRMatrix");
-		this.shader.mvMatrixUniform = gl.getUniformLocation(this.shader, "uMVMatrix");
-		this.shader.pMatrixUniform = gl.getUniformLocation(this.shader, "uPMatrix");
+		this.shader.rMatrixUniform = gl.getUniformLocation(this.shader, "u_RMatrix");
+		this.shader.mvMatrixUniform = gl.getUniformLocation(this.shader, "u_MVMatrix");
+		this.shader.pMatrixUniform = gl.getUniformLocation(this.shader, "u_PMatrix");
 		this.shader.rsMatrixUniform = gl.getUniformLocation(this.shader, "uRotSkybox");
 
 		this.shader.textCords = gl.getAttribLocation(this.shader, "aVertexTexCoords");
@@ -201,7 +201,7 @@ class plane {
 	setShadersParams() {
 		gl.useProgram(this.shader);
 
-		this.shader.vAttrib = gl.getAttribLocation(this.shader, "aVertexPosition");
+		this.shader.vAttrib = gl.getAttribLocation(this.shader, "a_VertexPosition");
 		gl.enableVertexAttribArray(this.shader.vAttrib);
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.vBuffer);
 		gl.vertexAttribPointer(this.shader.vAttrib, this.vBuffer.itemSize, gl.FLOAT, false, 0, 0);
@@ -211,8 +211,8 @@ class plane {
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.tBuffer);
 		gl.vertexAttribPointer(this.shader.tAttrib,this.tBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
-		this.shader.pMatrixUniform = gl.getUniformLocation(this.shader, "uPMatrix");
-		this.shader.mvMatrixUniform = gl.getUniformLocation(this.shader, "uMVMatrix");
+		this.shader.pMatrixUniform = gl.getUniformLocation(this.shader, "u_PMatrix");
+		this.shader.mvMatrixUniform = gl.getUniformLocation(this.shader, "u_MVMatrix");
 
 		mat4.identity(mvMatrix);
 		mat4.translate(mvMatrix, distCENTER);
@@ -427,7 +427,7 @@ class cubemap {
 	setShadersParams() {
 		gl.useProgram(this.shader);
 
-		this.shader.vAttrib = gl.getAttribLocation(this.shader, "aVertexPosition");
+		this.shader.vAttrib = gl.getAttribLocation(this.shader, "a_VertexPosition");
 		gl.enableVertexAttribArray(this.shader.vAttrib);
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.vBuffer);
 		gl.vertexAttribPointer(this.shader.vAttrib, this.vBuffer.itemSize, gl.FLOAT, false, 0, 0);
@@ -437,9 +437,9 @@ class cubemap {
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.tBuffer);
 		gl.vertexAttribPointer(this.shader.tAttrib,this.tBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
-		this.shader.rMatrixUniform = gl.getUniformLocation(this.shader, "uRMatrix");
-		this.shader.pMatrixUniform = gl.getUniformLocation(this.shader, "uPMatrix");
-		this.shader.mvMatrixUniform = gl.getUniformLocation(this.shader, "uMVMatrix");
+		this.shader.rMatrixUniform = gl.getUniformLocation(this.shader, "u_RMatrix");
+		this.shader.pMatrixUniform = gl.getUniformLocation(this.shader, "u_PMatrix");
+		this.shader.mvMatrixUniform = gl.getUniformLocation(this.shader, "u_MVMatrix");
 		this.shader.rsMatrixUniform = gl.getUniformLocation(this.shader, "uRotSkybox");
 
 		mat4.identity(mvMatrix);

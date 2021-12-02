@@ -1,12 +1,12 @@
-attribute vec3 aVertexPosition;
+attribute vec3 a_VertexPosition;
 
-uniform mat4 uMVMatrix;
-uniform mat4 uPMatrix;
+uniform mat4 u_MVMatrix;
+uniform mat4 u_PMatrix;
 uniform mat4 uRotSkybox;
 
-varying vec3 texCoords;
+varying vec3 v_texCoords;
 
 void main(void) {
-	texCoords = vec3(vec4(aVertexPosition, 1.0) * uRotSkybox);
-	gl_Position = uPMatrix * uMVMatrix  * vec4(aVertexPosition, 1.0);
+	v_texCoords = vec3(vec4(a_VertexPosition, 1.0) * uRotSkybox);
+	gl_Position = u_PMatrix * u_MVMatrix  * vec4(a_VertexPosition, 1.0);
 }
