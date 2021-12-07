@@ -40,7 +40,7 @@ float Fresnel(float u_Ni, float dim) {
 	float add_g_c = sqrt_g + c;
 	float sub_g_c = sqrt_g - c;
 
-	return 0.5 * ( (sub_g_c*sub_g_c) / (add_g_c*add_g_c))  *  (1.0 +  ((c*add_g_c -1.0)*(c*add_g_c -1.0)) / ((c*sub_g_c -1.0)*(c*sub_g_c -1.0)) ); 
+	return 0.5 * ( (sub_g_c*sub_g_c) / (add_g_c*add_g_c))  *  (1.0 +  ((c*add_g_c -1.0)*(c*add_g_c -1.0)) / ((c*sub_g_c +1.0)*(c*sub_g_c +1.0)) ); 
 }
 
 // ==============================================
@@ -48,8 +48,8 @@ void main(void)
 {
 	// calcul des vecteurs
 	vec3 o = normalize(CAM_POS - vec3(v_pos3D));   // fragment -> camera
-	vec3 i = normalize(vec3(-o+2.0*v_N*(ddot(o, v_N)))); // fragment -> lumière (vecteur symetrique a la normale)
 	vec3 m = v_N; //normale de la microfacette (ici = a la normal car 1 on utilise 1 microfacette)
+	vec3 i = reflect(-o, m); //vecteur reflechi
 
 
 	// calcul  des dot products
@@ -63,7 +63,7 @@ void main(void)
 	vec4 refl_color = textureCube(skybox, refl);
 
 	// calcul refraction color skymap
-	vec3 refra = v_reverse * refract(i, v_N, u_Ni);
+	vec3 refra = v_reverse * refract(-o, m, 1.0/u_Ni);
 	vec4 refra_color = textureCube(skybox, refra);
 
 	vec3 Lo; // luminance de l'objet
@@ -81,7 +81,7 @@ void main(void)
 		Lo = vec3(refl_color);
 	}
 
-	gl_FragColor = vec4(Lo,1.0);
+	gl_FragColor = vec4(F, F, F,1.0);
 }
 
 
