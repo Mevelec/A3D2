@@ -78,7 +78,7 @@ float Fresnel(float u_Ni, float dim) {
 	float add_g_c = sqrt_g + c;
 	float sub_g_c = sqrt_g - c;
 
-	return 0.5 * ( (sub_g_c*sub_g_c) / (add_g_c*add_g_c))  *  (1.0 +  ((c*add_g_c -1.0)*(c*add_g_c -1.0)) / ((c*sub_g_c -1.0)*(c*sub_g_c -1.0)) ); 
+	return 0.5 * ( (sub_g_c*sub_g_c) / (add_g_c*add_g_c))  *  (1.0 +  ((c*add_g_c -1.0)*(c*add_g_c -1.0)) / ((c*sub_g_c +1.0)*(c*sub_g_c +1.0)) ); 
 }
 
 //--------------------
@@ -208,7 +208,7 @@ void main(void)
 			totalWeight += NdotL; 
 
 			// calcul de la direction de la lumiere reflechie
-			vec3 i = normalize(vec3(-o+2.0*v_N*(ddot(o, v_N)))); // fragment -> lumière (vecteur symetrique a la normale)
+			vec3 i = reflect(-o, m); //vecteur reflechi
 
 			// calcul  des dot products de la microfacette
 			float din = ddot(i, v_N);
@@ -228,11 +228,11 @@ void main(void)
 			float G = Attenuation( dnm, don, dom, din, dim);
 			
 			// calcul reflection color skymap
-			vec3 refl =  u_revese * vec3(  i);
+			vec3 refl =  u_revese * i;
 			vec3 refl_color = vec3(textureCube(skybox, refl));
 
 			// calcul refraction color skymap
-			vec3 refra = u_revese * refract(i, m, u_Ni);
+			vec3 refra = u_revese * refract(-o, m, 1.0/u_Ni);
 			vec3 refra_color = vec3(textureCube(skybox, refra));
 
 			// Line to mix reflected color with aborbed color
