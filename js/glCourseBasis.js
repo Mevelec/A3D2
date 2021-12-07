@@ -92,19 +92,29 @@ class objmesh {
 		
 		loadObjFile(this);
 		loadShaders(this);
-		this.loadTexture();
+		this.texture_color = new Image();
+		this.texture_color.onload = this.onLoadedImage.bind(this);
+		this.texture_color.src = "./Textures/Brick/Bricks_diffuse.png";
+
+		this.texture_roughness = new Image();
+		this.texture_roughness.onload = this.onLoadedImage.bind(this);
+		this.texture_roughness.src = "./Textures/Brick/Bricks_specular.png";
+
+		this.texture_normal = new Image();
+		this.texture_normal.onload = this.onLoadedImage.bind(this);
+		this.texture_normal.src = "./Textures/Brick/Bricks_normal.png";
 	}
 	
-	loadTexture(){
-		var image = new Image();
-		var texture = gl.createTexture();
-		image.src = "./Textures/basketball.jpg";
-		image.addEventListener('load', function(){
-			gl.bindTexture(gl.TEXTURE_2D, texture);
-			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA,gl.UNSIGNED_BYTE, image);
-			gl.generateMipmap(gl.TEXTURE_2D);
-		});
+	onLoadedImage(){
+		console.log("TEXTURE LOADING");
+		this.texture = gl.createTexture();
+		gl.bindTexture(gl.TEXTURE_2D, this.texture);
 
+		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, this.texture_color);
+		//gl.generateMipmap(gl.TEXTURE_2D);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+		gl.bindTexture(gl.TEXTURE_2D, null);
 	}
 
 	// --------------------------------------------
@@ -156,6 +166,12 @@ class objmesh {
 		if(this.shader && this.loaded==4 && this.mesh != null) {
 			this.setShadersParams();
 			this.setMatrixUniforms();
+
+			this.shader.texture = gl.getUniformLocation(this.shader, "texture");
+
+			gl.activeTexture(gl.TEXTURE0);
+			gl.bindTexture(gl.TEXTURE_2D, this.texture);
+			gl.uniform1i(this.shader.texture, 0);
 
 			gl.bindTexture(gl.TEXTURE_CUBE_MAP, CUBEMAP.texture);
 
