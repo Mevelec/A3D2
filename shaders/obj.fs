@@ -81,7 +81,7 @@ void main(void)
 		Lo = vec3(refl_color);
 	}
 
-	gl_FragColor = vec4(F, F, F,1.0);
+	gl_FragColor = vec4(Lo,1.0);
 }
 
 
