@@ -50,6 +50,14 @@
 							<label for="transmission"> transmission : [ 0;1 ] </label><br>
 							<input type="range" name="transmission" id="transmission" min="0" max="1" step="0.01" value="0" oninput="MATERIAL.transmission = Number(value) ; console.log(value)">
 							<br> <br>
+
+							<label for="oppacite"> Type de materiel : </label>
+							<select name="oppacite" id="oppacite">
+								<option value="0"> Reflection </option>
+								<option value="1"> Refraction </option>
+								<option value="2"> Reflection & Refraction </option>
+							</select>
+
 <!--
 							<label for="refraction"> Refraction </label><br>
 							<input type="radio" name="mode" id="refraction">
@@ -83,10 +91,10 @@
 							<legend> Parametrage de la scene   </legend>
 							<label for="skymap">Choix de la skymap : </label>
 							<select name="skymap" id="skymap">
-								<option value="Yokohama" selected=true onclick="CUBEMAP.cubemapName = value;"> Yokohama </option>
+								<option value="Yokohama"  onclick="CUBEMAP.cubemapName = value;"> Yokohama </option>
 								<option value="Areskutan" onclick="CUBEMAP.cubemapName = value ; CUBEMAP.initAll() "> Areskutan </option>
 								<option value="FortPoint" onclick="CUBEMAP.cubemapName = value ; CUBEMAP.initAll()" > FortPoint </option>
-								<option value="Lycksele" onclick="CUBEMAP.cubemapName = value ; CUBEMAP.initAll()"  > Lycksele </option>
+								<option value="Lycksele" selected=true onclick="CUBEMAP.cubemapName = value ; CUBEMAP.initAll()"  > Lycksele </option>
 								<option value="Tantolunden" onclick="CUBEMAP.cubemapName = value ; CUBEMAP.initAll()"> Tantolunden </option>
 							</select>
 

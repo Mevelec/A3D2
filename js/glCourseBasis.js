@@ -244,7 +244,7 @@ class cubemap {
 		this.shaderName='shaders/skybox';
 		this.loaded=-1;
 		this.shader=null;
-		this.cubemapName = 'Yokohama'
+		this.cubemapName = 'Lycksele'
 		this.initAll();
 		
 
