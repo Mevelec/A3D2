@@ -27,7 +27,7 @@ uniform vec3 u_light_color;  // couleur de la lumière emise
 uniform float u_light_pow;   // puissance de la lumière
 
 // description de la Skybox
-//uniform samplerCube skybox;  // sampler de la cube map
+uniform samplerCube skybox;  // sampler de la cube map
 varying mat3 u_revese;	     // matrice de correction de la transformation pour la cube map
 
 uniform sampler2D texture_color; 
