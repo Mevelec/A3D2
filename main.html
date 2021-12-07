@@ -51,11 +51,11 @@
 							<input type="range" name="transmission" id="transmission" min="0" max="1" step="0.01" value="0" oninput="MATERIAL.transmission = Number(value) ; console.log(value)">
 							<br> <br>
 
-							<label for="oppacite"> Type de materiel : </label>
-							<select name="oppacite" id="oppacite">
-								<option value="0"> Reflection </option>
-								<option value="1"> Refraction </option>
-								<option value="2"> Reflection & Refraction </option>
+							<label for="mix"> Type de materiel : </label>
+							<select name="mix" id="mix">
+								<option value="0" selected=true onclick="MATERIAL.mix = value;"> Reflection </option>
+								<option value="1" onclick="MATERIAL.mix = value;"> Refraction </option>
+								<option value="2" onclick="MATERIAL.mix = value;"> Reflection & Refraction </option>
 							</select>
 
 <!--

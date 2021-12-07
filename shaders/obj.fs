@@ -14,6 +14,7 @@ uniform vec3 u_Kd;            // couleur
 uniform float u_sigma;        // roughness du materiau
 uniform float u_Ni;           // indice du milieu ~ 1.3 pour l'eau
 uniform float u_transmission; //taux de transmission de la refraction
+uniform float u_mix; // type de mixage
 
 // Description de la camera
 vec3 CAM_POS = vec3(0.0); //position
@@ -240,13 +241,26 @@ void main(void)
 			//vec3 Kd = vec3(refra_color); // line to use clear glass
 
 			// calculs partiels
-			vec3 diffuse_BRDF = (1.0-F)*(Kd / PI);
-			vec3 specular_BRDF = vec3((F*D*G) / (4.0 * din * don));
 
-			vec3 Lo = refl_color * (diffuse_BRDF + specular_BRDF) * din;
+
+			vec3 Lo = vec3(0);
+			// change le comportement en fonction du mix choisi
+			if(u_mix == 1.0){ // verre
+				Lo = vec3(refra_color);
+			}
+			else if(u_mix == 2.0){ // reflectio et refraction avec fresnel
+				// calculs partiels
+				vec3 diffuse_BRDF = (1.0-F)*(Kd / PI);
+				vec3 specular_BRDF = vec3((F*D*G) / (4.0 * din * don));
+				Lo =  refl_color * (diffuse_BRDF + specular_BRDF) * din;
+			}
+			else { // mirroir
+				Lo = vec3(refl_color);
+			}
 			cumul += vec3(Lo)/NdotL;
 		}
 	}
+	
 	gl_FragColor = vec4(cumul/u_Sample, 1.0);
 }
 
