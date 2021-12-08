@@ -29,7 +29,10 @@ uniform float u_light_pow;   // puissance de la lumière
 // description de la Skybox
 //uniform samplerCube skybox;  // sampler de la cube map
 varying mat3 u_revese;	     // matrice de correction de la transformation pour la cube map
-uniform sampler2D texture;
+
+uniform sampler2D texture_color; 
+uniform sampler2D texture_roughness;
+uniform sampler2D texture_normal;
 
 // Timelog
 uniform float u_time;        // temps actuel utilisé pour le sampling
@@ -166,7 +169,7 @@ vec3 ImportanceSampleGGX(vec2 Xi, vec3 v_N, float roughness)
 // ==============================================
 void main(void)
 {
-	gl_FragColor =  texture2D(texture, v_texCoords);     
+	gl_FragColor =  texture2D(texture_color, v_texCoords);     
 	return;
 /*
 	float totalWeight = 0.0;    

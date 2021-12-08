@@ -92,24 +92,27 @@ class objmesh {
 		
 		loadObjFile(this);
 		loadShaders(this);
+		
 		// bind on 0 wit sampler name color_tex
 		this.texture_color = new Image();
 		this.texture_color.onload = this.onLoadedImage.bind(this);
 		this.texture_color.src = "./Textures/Brick/Bricks_diffuse.png";
 
-		// bind on 0 wit sampler name color_rough
+		// bind on 1 wit sampler name color_rough
 		this.texture_roughness = new Image();
 		this.texture_roughness.onload = this.onLoadedImage.bind(this);
 		this.texture_roughness.src = "./Textures/Brick/Bricks_specular.png";
 		
-		// bind on 0 wit sampler name color_nm
+		// bind on 2 wit sampler name color_nm
 		this.texture_normal = new Image();
 		this.texture_normal.onload = this.onLoadedImage.bind(this);
 		this.texture_normal.src = "./Textures/Brick/Bricks_normal.png";
+
+		//TODO : Reussir à passer les id dans l'appel de onLoadedImage
 	}
 	
 	onLoadedImage(id){
-		console.log("TEXTURE LOADING");
+		console.log("TEXTURE LOADING" + this);
 		this.texture = gl.createTexture();
 		gl.bindTexture(gl.TEXTURE_2D, this.texture);
 
