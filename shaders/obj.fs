@@ -14,6 +14,7 @@ uniform vec3 u_Kd;            // couleur
 uniform float u_sigma;        // roughness du materiau
 uniform float u_Ni;           // indice du milieu ~ 1.3 pour l'eau
 uniform float u_transmission; //taux de transmission de la refraction
+uniform float u_mix; // type de mixage
 
 // Description de la camera
 vec3 CAM_POS = vec3(0.0); //position
@@ -78,7 +79,7 @@ float Fresnel(float u_Ni, float dim) {
 	float add_g_c = sqrt_g + c;
 	float sub_g_c = sqrt_g - c;
 
-	return 0.5 * ( (sub_g_c*sub_g_c) / (add_g_c*add_g_c))  *  (1.0 +  ((c*add_g_c -1.0)*(c*add_g_c -1.0)) / ((c*sub_g_c -1.0)*(c*sub_g_c -1.0)) ); 
+	return 0.5 * ( (sub_g_c*sub_g_c) / (add_g_c*add_g_c))  *  (1.0 +  ((c*add_g_c -1.0)*(c*add_g_c -1.0)) / ((c*sub_g_c +1.0)*(c*sub_g_c +1.0)) ); 
 }
 
 //--------------------
@@ -208,7 +209,7 @@ void main(void)
 			totalWeight += NdotL; 
 
 			// calcul de la direction de la lumiere reflechie
-			vec3 i = normalize(vec3(-o+2.0*v_N*(ddot(o, v_N)))); // fragment -> lumière (vecteur symetrique a la normale)
+			vec3 i = reflect(-o, m); //vecteur reflechi
 
 			// calcul  des dot products de la microfacette
 			float din = ddot(i, v_N);
@@ -228,11 +229,11 @@ void main(void)
 			float G = Attenuation( dnm, don, dom, din, dim);
 			
 			// calcul reflection color skymap
-			vec3 refl =  u_revese * vec3(  i);
+			vec3 refl =  u_revese * i;
 			vec3 refl_color = vec3(textureCube(skybox, refl));
 
 			// calcul refraction color skymap
-			vec3 refra = u_revese * refract(i, m, u_Ni);
+			vec3 refra = u_revese * refract(-o, m, 1.0/u_Ni);
 			vec3 refra_color = vec3(textureCube(skybox, refra));
 
 			// Line to mix reflected color with aborbed color
@@ -240,13 +241,26 @@ void main(void)
 			//vec3 Kd = vec3(refra_color); // line to use clear glass
 
 			// calculs partiels
-			vec3 diffuse_BRDF = (1.0-F)*(Kd / PI);
-			vec3 specular_BRDF = vec3((F*D*G) / (4.0 * din * don));
 
-			vec3 Lo = refl_color * (diffuse_BRDF + specular_BRDF) * din;
+
+			vec3 Lo = vec3(0);
+			// change le comportement en fonction du mix choisi
+			if(u_mix == 1.0){ // verre
+				Lo = vec3(refra_color);
+			}
+			else if(u_mix == 2.0){ // reflectio et refraction avec fresnel
+				// calculs partiels
+				vec3 diffuse_BRDF = (1.0-F)*(Kd / PI);
+				vec3 specular_BRDF = vec3((F*D*G) / (4.0 * din * don));
+				Lo =  refl_color * (diffuse_BRDF + specular_BRDF) * din;
+			}
+			else { // mirroir
+				Lo = vec3(refl_color);
+			}
 			cumul += vec3(Lo)/NdotL;
 		}
 	}
+	
 	gl_FragColor = vec4(cumul/u_Sample, 1.0);
 }
 

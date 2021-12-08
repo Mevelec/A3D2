@@ -27,6 +27,7 @@ class Material{
 		this.transmission = 0;
 		this.distrib = 0;
 		this.sample = 10;
+		this.mix = 0;
 	}
 
 	// --------------------------------------------
@@ -38,6 +39,7 @@ class Material{
 		shader.uTime = gl.getUniformLocation(shader, "u_time");
 		shader.uDistrib = gl.getUniformLocation(shader, "u_Distrib");
 		shader.uSample = gl.getUniformLocation(shader, "u_Sample");
+		shader.uMix = gl.getUniformLocation(shader, "u_mix");
 
 		gl.uniform3fv(shader.mKdUniform, this.Kd);
 		gl.uniform1f(shader.mSigmaUniform, this.sigma);
@@ -46,6 +48,7 @@ class Material{
 		gl.uniform1f(shader.uTime, TIME);
 		gl.uniform1f(shader.uDistrib, this.distrib);
 		gl.uniform1f(shader.uSample, this.sample);
+		gl.uniform1f(shader.uMix, this.mix);
 
 	}
 }
