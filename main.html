@@ -53,9 +53,10 @@
 
 							<label for="mix"> Type de materiel : </label>
 							<select name="mix" id="mix">
-								<option value="0" selected=true onclick="MATERIAL.mix = value;"> Reflection </option>
-								<option value="1" onclick="MATERIAL.mix = value;"> Refraction </option>
-								<option value="2" onclick="MATERIAL.mix = value;"> Reflection & Refraction </option>
+								<option value="0" selected=true onclick="MATERIAL.mix = value;"> Reflection seule </option>
+								<option value="1" onclick="MATERIAL.mix = value;"> Refraction seule </option>
+								<option value="2" onclick="MATERIAL.mix = value;"> BRDF </option>
+								<option value="3" onclick="MATERIAL.mix = value;"> Reflection & Refraction </option>
 							</select>
 
 <!--

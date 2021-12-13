@@ -169,9 +169,6 @@ vec3 ImportanceSampleGGX(vec2 Xi, vec3 v_N, float roughness)
 // ==============================================
 void main(void)
 {
-	gl_FragColor =  texture2D(texture_color, v_texCoords);     
-	return;
-/*
 	float totalWeight = 0.0;    
 	vec3 cumul = vec3(0.0);	
 
@@ -247,28 +244,41 @@ void main(void)
 			vec3 Kd = u_Kd*(1.0-u_transmission) + vec3(refra_color)*u_transmission; // ligne pour manibuler l'opacite du materiau
 			//vec3 Kd = vec3(refra_color); // line to use clear glass
 
+
+			// revoir la formule BRDF et le mélange final Li * FR * costeta
+			// mettre des options de melange coherants
 			// calculs partiels
-
-
 			vec3 Lo = vec3(0);
 			// change le comportement en fonction du mix choisi
-			if(u_mix == 1.0){ // verre
+			if(u_mix == 1.0){ // refract only
 				Lo = vec3(refra_color);
 			}
-			else if(u_mix == 2.0){ // reflectio et refraction avec fresnel
-				// calculs partiels
+			else if(u_mix == 2.0){
 				vec3 diffuse_BRDF = (1.0-F)*(Kd / PI);
 				vec3 specular_BRDF = vec3((F*D*G) / (4.0 * din * don));
-				Lo =  refl_color * (diffuse_BRDF + specular_BRDF) * din;
+				cumul += (diffuse_BRDF + specular_BRDF) * din;
+			}
+			else if(u_mix == 3.0){ // reflectio et refraction avec fresnel
+				// calculs partiels
+
+				if(u_Ni > 4.8){
+					Lo = refl_color;
+				}
+				else {
+					vec3 diffuse_BRDF = (1.0-F)*(Kd / PI);
+					vec3 specular_BRDF = vec3((F*D*G) / (4.0 * din * don));
+				 	Lo = refl_color * (diffuse_BRDF + specular_BRDF) * din;
+				}
 			}
 			else { // mirroir
 				Lo = vec3(refl_color);
 			}
 			cumul += vec3(Lo)/NdotL;
+
 		}
 	}
 	
-	gl_FragColor = vec4(cumul/u_Sample, 1.0);*/
+	gl_FragColor = vec4(cumul/u_Sample, 1.0);
 }
 
 
