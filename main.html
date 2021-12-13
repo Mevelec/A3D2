@@ -92,7 +92,7 @@
 							<legend> Parametrage de la scene   </legend>
 							<label for="skymap">Choix de la skymap : </label>
 							<select name="skymap" id="skymap">
-								<option value="Yokohama"  onclick="CUBEMAP.cubemapName = value;"> Yokohama </option>
+								<option value="Yokohama"  onclick="CUBEMAP.cubemapName = value; CUBEMAP.initAll()"> Yokohama </option>
 								<option value="Areskutan" onclick="CUBEMAP.cubemapName = value ; CUBEMAP.initAll() "> Areskutan </option>
 								<option value="FortPoint" onclick="CUBEMAP.cubemapName = value ; CUBEMAP.initAll()" > FortPoint </option>
 								<option value="Lycksele" selected=true onclick="CUBEMAP.cubemapName = value ; CUBEMAP.initAll()"  > Lycksele </option>
