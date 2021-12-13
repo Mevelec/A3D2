@@ -96,17 +96,20 @@ class objmesh {
 		// bind on 0 wit sampler name color_tex
 		this.texture_color = new Image();
 		this.texture_color.onload = this.onLoadedImage.bind(this, {id : 1});
+		this.texture_color.crossOrigin = "anonymous"
 		this.texture_color.src = "./Textures/Brick/Bricks_diffuse.png";
 
 		
 		// bind on 1 wit sampler name color_rough
 		this.texture_roughness = new Image();
 		this.texture_roughness.onload = this.onLoadedImage.bind(this, {id : 2});
+		this.texture_roughness.crossOrigin = "anonymous"
 		this.texture_roughness.src = "./Textures/Brick/Bricks_specular.png";
 		
 		// bind on 2 wit sampler name color_nm
 		this.texture_normal = new Image();
 		this.texture_normal.onload = this.onLoadedImage.bind(this, {id : 3});
+		this.texture_normal.crossOrigin = "anonymous"
 		this.texture_normal.src = "./Textures/Brick/Bricks_normal.png";
 		
 		//TODO : Reussir à passer les id dans l'appel de onLoadedImage
@@ -359,6 +362,7 @@ class cubemap {
 		this.loaded_images = 0;
 		for(var i = 0; i < 6; i++){
 			this.textures_images[i] = new Image();
+			this.textures_images[i].crossOrigin = "anonymous"
 			this.textures_images[i].onload = this.onLoadedImage.bind(this);
 			this.textures_images[i].src = "textures_cubemap/" + this.cubemapName + "/"+textures_names[i]+".jpg";
 		}
