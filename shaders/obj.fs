@@ -181,11 +181,11 @@ void main(void)
 	// Activation des textures 
 	if ( u_isTextured == 1.0){
 		// On utilise la roughness & normal de la texture 
- 		vec3 N =  FromTangeanteToWorld(v_N, vec3(texture2D(s_texture_normal, v_texCoords)));
-		float sigma =  u_sigma  * (1.0 - texture2D(s_texture_roughness, v_texCoords).x); 	// C'est une image en nuance de gris, on ne peut utiliser qu'un seul cannal, ici le rouge avec .x
-		vec3 Kd = vec3(texture2D(s_texture_color, v_texCoords));
+ 		N =  FromTangeanteToWorld(v_N, vec3(texture2D(s_texture_normal, v_texCoords)));
+		sigma =  u_sigma  * (1.0 - texture2D(s_texture_roughness, v_texCoords).x); 	// C'est une image en nuance de gris, on ne peut utiliser qu'un seul cannal, ici le rouge avec .x
+		Kd = vec3(texture2D(s_texture_color, v_texCoords));
 	} 
-	
+
 	vec3 o = normalize(CAM_POS - vec3(v_pos3D));   // fragment -> camera
 
 	// calcul  des dot products du fragment

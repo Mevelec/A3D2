@@ -32,7 +32,8 @@ class Material{
 	}
 
 	updateIsTextured(val){
-		if (val) {
+		
+		if (this.isTextured == 0.0) {
 			this.isTextured = 1.0; 
 		} else {
 			this.isTextured = 0.0;
