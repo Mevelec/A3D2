@@ -218,7 +218,7 @@ void main(void)
 			m = ImportanceSampleGGX(vec2(x, y), N, sigma);
 		}
 
-		float NdotL = ddot(N, m);
+		float dnm = ddot(N, m);
 
 		// check if microfacet participate to lighting
 		if(NdotL > 0.0)
@@ -232,7 +232,6 @@ void main(void)
 			float din = ddot(i, N);
 			float dim = ddot(i, m);
 			float dom = ddot(o, m);
-			float dnm = ddot(N, m);
 
 			// calcul des méthodes
 			float F = Fresnel(u_Ni, dim);
@@ -268,7 +267,7 @@ void main(void)
 				Lo = vec3(refra_color);
 			}
 			else if(u_mix == 2.0){
-				vec3 diffuse_BRDF = (1.0-F)*(Kd / PI);
+				vec3 diffuse_BRDF = (1.0-F) (Kd / PI);
 				vec3 specular_BRDF = vec3((F*D*G) / (4.0 * din * don));
 				cumul += (diffuse_BRDF + specular_BRDF) * din;
 			}
@@ -279,15 +278,15 @@ void main(void)
 					Lo = refl_color;
 				}
 				else {
-					vec3 diffuse_BRDF = (1.0-F)*(Kd / PI);
+					vec3 diffuse_BRDF = (Kd / PI);
 					vec3 specular_BRDF = vec3((F*D*G) / (4.0 * din * don));
-				 	Lo = refl_color * (diffuse_BRDF + specular_BRDF) * din;
+				 	Lo = ((1.0-F)*diffuse_BRDF  +  specular_BRDF) * din;
 				}
 			}
 			else { // mirroir
 				Lo = vec3(refl_color);
 			}
-			cumul += vec3(Lo)/NdotL;
+			cumul += vec3(Lo)/dnm;
 
 		}
 	}
