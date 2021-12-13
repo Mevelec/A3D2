@@ -95,29 +95,48 @@ class objmesh {
 		
 		// bind on 0 wit sampler name color_tex
 		this.texture_color = new Image();
-		this.texture_color.onload = this.onLoadedImage.bind(this);
+		this.texture_color.onload = this.onLoadedImage.bind(this, {id : 1});
 		this.texture_color.src = "./Textures/Brick/Bricks_diffuse.png";
 
+		
 		// bind on 1 wit sampler name color_rough
 		this.texture_roughness = new Image();
-		this.texture_roughness.onload = this.onLoadedImage.bind(this);
+		this.texture_roughness.onload = this.onLoadedImage.bind(this, {id : 2});
 		this.texture_roughness.src = "./Textures/Brick/Bricks_specular.png";
 		
 		// bind on 2 wit sampler name color_nm
 		this.texture_normal = new Image();
-		this.texture_normal.onload = this.onLoadedImage.bind(this);
+		this.texture_normal.onload = this.onLoadedImage.bind(this, {id : 3});
 		this.texture_normal.src = "./Textures/Brick/Bricks_normal.png";
-
+		
 		//TODO : Reussir à passer les id dans l'appel de onLoadedImage
 	}
 	
-	onLoadedImage(id){
-		console.log("TEXTURE LOADING" + this);
-		this.texture = gl.createTexture();
-		gl.bindTexture(gl.TEXTURE_2D, this.texture);
+	onLoadedImage(obj){
+		console.log("TEXTURE LOADING" + obj.id);
 
-		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, this.texture_color);
-		//gl.generateMipmap(gl.TEXTURE_2D);
+		if (obj.id == 1 ) { 
+			this.texture1 = gl.createTexture();
+			gl.activeTexture(gl.TEXTURE1);
+			gl.bindTexture(gl.TEXTURE_2D, this.texture1);
+			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, this.texture_color);
+		
+		}  else if (obj.id == 2) {
+			this.texture2 = gl.createTexture();
+			gl.activeTexture(gl.TEXTURE2);
+			gl.bindTexture(gl.TEXTURE_2D, this.texture2);
+			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, this.texture_roughness);
+		
+		} else if (obj.id == 3 ){
+			this.texture3 = gl.createTexture();
+			gl.activeTexture(gl.TEXTURE3);
+			gl.bindTexture(gl.TEXTURE_2D, this.texture3);
+			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, this.texture_normal);
+		}
+
+
+
+		
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
 		gl.bindTexture(gl.TEXTURE_2D, null);
@@ -149,8 +168,6 @@ class objmesh {
 		this.shader.pMatrixUniform = gl.getUniformLocation(this.shader, "u_PMatrix");
 		this.shader.rsMatrixUniform = gl.getUniformLocation(this.shader, "uRotSkybox");
 
-		this.shader.textCords = gl.getAttribLocation(this.shader, "aVertexTexCoords");
-
 		LIGHT.setShadersParams(this.shader);
 		MATERIAL.setShadersParams(this.shader);
 
@@ -173,11 +190,24 @@ class objmesh {
 			this.setShadersParams();
 			this.setMatrixUniforms();
 
-			this.shader.texture = gl.getUniformLocation(this.shader, "texture");
+			this.shader.texture_color = gl.getUniformLocation(this.shader, "s_texture_color");
+			gl.activeTexture(gl.TEXTURE1);
+			gl.bindTexture(gl.TEXTURE_2D, this.texture1);
+			gl.uniform1i(this.shader.texture_color, 1);
 
-			gl.activeTexture(gl.TEXTURE0);
-			gl.bindTexture(gl.TEXTURE_2D, this.texture);
-			gl.uniform1i(this.shader.texture, 0);
+			
+			this.shader.texture_roughness = gl.getUniformLocation(this.shader, "s_texture_roughness");
+			gl.activeTexture(gl.TEXTURE2);
+			gl.bindTexture(gl.TEXTURE_2D, this.texture2);
+			gl.uniform1i(this.shader.texture_roughness, 2);
+
+			
+			this.shader.texture_normal = gl.getUniformLocation(this.shader, "s_texture_normal");
+			gl.activeTexture(gl.TEXTURE3);
+			gl.bindTexture(gl.TEXTURE_2D, this.texture3);
+			gl.uniform1i(this.shader.texture_normal, 3);
+
+
 
 			gl.bindTexture(gl.TEXTURE_CUBE_MAP, CUBEMAP.texture);
 
@@ -244,7 +274,7 @@ class plane {
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.vBuffer);
 		gl.vertexAttribPointer(this.shader.vAttrib, this.vBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
-		this.shader.tAttrib = gl.getAttribLocation(this.shader, "aTexCoords");
+		this.shader.tAttrib = gl.getAttribLocation(this.shader, "a_VertexTextureCoords");
 		gl.enableVertexAttribArray(this.shader.tAttrib);
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.tBuffer);
 		gl.vertexAttribPointer(this.shader.tAttrib,this.tBuffer.itemSize, gl.FLOAT, false, 0, 0);
@@ -307,6 +337,7 @@ class cubemap {
 		console.log("creating cubmap texture");
 
 		this.texture = gl.createTexture();
+		gl.activeTexture(gl.TEXTURE0);
 		gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.texture);
 		for (var i = 0; i < 6; i++) {
 			gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, this.textures_images[i]);
@@ -470,7 +501,7 @@ class cubemap {
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.vBuffer);
 		gl.vertexAttribPointer(this.shader.vAttrib, this.vBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
-		this.shader.tAttrib = gl.getAttribLocation(this.shader, "aTexCoords");
+		this.shader.tAttrib = gl.getAttribLocation(this.shader, "a_VertexTextureCoords");
 		gl.enableVertexAttribArray(this.shader.tAttrib);
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.tBuffer);
 		gl.vertexAttribPointer(this.shader.tAttrib,this.tBuffer.itemSize, gl.FLOAT, false, 0, 0);
