@@ -28,6 +28,15 @@ class Material{
 		this.distrib = 0;
 		this.sample = 10;
 		this.mix = 0;
+		this.isTextured = 1.0; 
+	}
+
+	updateIsTextured(val){
+		if (val) {
+			this.isTextured = 1.0; 
+		} else {
+			this.isTextured = 0.0;
+		}
 	}
 
 	// --------------------------------------------
@@ -40,6 +49,7 @@ class Material{
 		shader.uDistrib = gl.getUniformLocation(shader, "u_Distrib");
 		shader.uSample = gl.getUniformLocation(shader, "u_Sample");
 		shader.uMix = gl.getUniformLocation(shader, "u_mix");
+		shader.uIsTextured = gl.getUniformLocation(shader, "u_isTextured");
 
 		gl.uniform3fv(shader.mKdUniform, this.Kd);
 		gl.uniform1f(shader.mSigmaUniform, this.sigma);
@@ -49,6 +59,7 @@ class Material{
 		gl.uniform1f(shader.uDistrib, this.distrib);
 		gl.uniform1f(shader.uSample, this.sample);
 		gl.uniform1f(shader.uMix, this.mix);
+		gl.uniform1f(shader.uIsTextured, this.isTextured);
 
 	}
 }

@@ -14,7 +14,8 @@ uniform vec3 u_Kd;            // couleur
 uniform float u_sigma;        // roughness du materiau
 uniform float u_Ni;           // indice du milieu ~ 1.3 pour l'eau
 uniform float u_transmission; //taux de transmission de la refraction
-uniform float u_mix; // type de mixage
+uniform float u_mix; 		  // type de mixage
+uniform float u_isTextured;   // Active/Desactive la texture 
 
 // Description de la camera
 vec3 CAM_POS = vec3(0.0); //position
@@ -173,19 +174,18 @@ void main(void)
 	float totalWeight = 0.0;    
 	vec3 cumul = vec3(0.0);	
 
-	//On utilise la normale de la texture 
-	vec3 N =  FromTangeanteToWorld(v_N, vec3(texture2D(s_texture_normal, v_texCoords)));
-	//vec3 N = v_N;
+	vec3 N = v_N;
+	float sigma = u_sigma;
+	vec3 Kd = u_Kd;
 
-	// On utilise la roughness de la texture 
-	float sigma =  u_sigma  * (1.0 - texture2D(s_texture_roughness, v_texCoords).x); 	// C'est une image en nuance de gris, on ne peut utiliser qu'un seul cannal, ici le rouge avec .x
-	//float sigma = u_sigma;
-
-	// Ligne qui permet d'utiliser une texture plutot qu'une couleur simple 
-	vec3 Kd = vec3(texture2D(s_texture_color, v_texCoords));
-	//vec3 Kd = u_Kd;
-
-
+	// Activation des textures 
+	if ( u_isTextured == 1.0){
+		// On utilise la roughness & normal de la texture 
+ 		vec3 N =  FromTangeanteToWorld(v_N, vec3(texture2D(s_texture_normal, v_texCoords)));
+		float sigma =  u_sigma  * (1.0 - texture2D(s_texture_roughness, v_texCoords).x); 	// C'est une image en nuance de gris, on ne peut utiliser qu'un seul cannal, ici le rouge avec .x
+		vec3 Kd = vec3(texture2D(s_texture_color, v_texCoords));
+	} 
+	
 	vec3 o = normalize(CAM_POS - vec3(v_pos3D));   // fragment -> camera
 
 	// calcul  des dot products du fragment

@@ -35,6 +35,11 @@
 						</fieldset>	
 						<fieldset>
 							<legend> Parametrage du materiau </legend>
+
+							<label for="TextureActive"> Activation des textures : </label>
+							<input type="checkbox" name="TextureActive" id="TextureActive">
+							<br>
+							
 							<label for="Kd">Kd : </label><br>
 							<input type="color" id="Kd" name="Kd" value="#ffffff" oninput="MATERIAL.Kd = convertRGBA(value)">
 							<br>
