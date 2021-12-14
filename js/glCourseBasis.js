@@ -28,6 +28,7 @@ class Material{
 		this.distrib = 0;
 		this.sample = 10;
 		this.mix = 0;
+		this.factor = 0;
 		this.isTextured = 1.0; 
 	}
 
@@ -51,6 +52,7 @@ class Material{
 		shader.uSample = gl.getUniformLocation(shader, "u_Sample");
 		shader.uMix = gl.getUniformLocation(shader, "u_mix");
 		shader.uIsTextured = gl.getUniformLocation(shader, "u_isTextured");
+		shader.uFactor = gl.getUniformLocation(shader, "u_factor");
 
 		gl.uniform3fv(shader.mKdUniform, this.Kd);
 		gl.uniform1f(shader.mSigmaUniform, this.sigma);
@@ -61,6 +63,7 @@ class Material{
 		gl.uniform1f(shader.uSample, this.sample);
 		gl.uniform1f(shader.uMix, this.mix);
 		gl.uniform1f(shader.uIsTextured, this.isTextured);
+		gl.uniform1f(shader.uFactor, this.factor);
 
 	}
 }
@@ -109,20 +112,20 @@ class objmesh {
 		this.texture_color = new Image();
 		this.texture_color.onload = this.onLoadedImage.bind(this, {id : 1});
 		this.texture_color.crossOrigin = "anonymous"
-		this.texture_color.src = "./Textures/Brick/Bricks_diffuse.png";
+		this.texture_color.src = "./Textures/bricks_2/diffuse.png";
 
 		
 		// bind on 1 wit sampler name color_rough
 		this.texture_roughness = new Image();
 		this.texture_roughness.onload = this.onLoadedImage.bind(this, {id : 2});
 		this.texture_roughness.crossOrigin = "anonymous"
-		this.texture_roughness.src = "./Textures/Brick/Bricks_specular.png";
+		this.texture_roughness.src = "./Textures/bricks_2/roughness.png";
 		
 		// bind on 2 wit sampler name color_nm
 		this.texture_normal = new Image();
 		this.texture_normal.onload = this.onLoadedImage.bind(this, {id : 3});
 		this.texture_normal.crossOrigin = "anonymous"
-		this.texture_normal.src = "./Textures/Brick/Bricks_normal.png";
+		this.texture_normal.src = "./Textures/bricks_2/normal.png";
 		
 		//TODO : Reussir à passer les id dans l'appel de onLoadedImage
 	}

@@ -16,6 +16,7 @@ uniform float u_Ni;           // indice du milieu ~ 1.3 pour l'eau
 uniform float u_transmission; //taux de transmission de la refraction
 uniform float u_mix; 		  // type de mixage
 uniform float u_isTextured;   // Active/Desactive la texture 
+uniform float u_factor;   // Active/Desactive la texture 
 
 // Description de la camera
 vec3 CAM_POS = vec3(0.0); //position
@@ -182,7 +183,7 @@ void main(void)
 	if ( u_isTextured == 1.0){
 		// On utilise la roughness & normal de la texture 
  		N =  FromTangeanteToWorld(v_N, vec3(texture2D(s_texture_normal, v_texCoords)));
-		sigma =  u_sigma  * (1.0 - texture2D(s_texture_roughness, v_texCoords).x); 	// C'est une image en nuance de gris, on ne peut utiliser qu'un seul cannal, ici le rouge avec .x
+		sigma =  texture2D(s_texture_roughness, v_texCoords).x; 	// C'est une image en nuance de gris, on ne peut utiliser qu'un seul cannal, ici le rouge avec .x
 		Kd = vec3(texture2D(s_texture_color, v_texCoords));
 	} 
 
@@ -198,16 +199,16 @@ void main(void)
 	rand = Random(rand, u_time);	
 
 	// foreach sample
-	for(float i = 0.0; i < 10000.0; i++) {
+	for(float it = 0.0; it < 10000.0; it++) {
 		// break loop when the number of sample is reached
 		// must be made  like this because of opengl version not allowing  dynamic loops (conditionnal should be constant)
-		if (i >= u_Sample){
+		if (it >= u_Sample){
 			break;
 		}
 
 		// create randoms
-		float x = Random(rand, i);
-		float y = Random(rand, i*8.0);
+		float x = Random(rand, it);
+		float y = Random(rand, it*8.0);
 				
 		// calculate Importance
 		vec3 m = ImportanceSampleBeckman(vec2(x, y), N, sigma);
@@ -218,20 +219,19 @@ void main(void)
 			m = ImportanceSampleGGX(vec2(x, y), N, sigma);
 		}
 
-		float dnm = ddot(N, m);
+		vec3 i = reflect(-o, m); //vecteur reflechi
+		float dim = ddot(i, m);
 
 		// check if microfacet participate to lighting
-		if(NdotL > 0.0)
-		{
-			totalWeight += NdotL; 
+		//if(dim > 0.0)
+		//{
 
 			// calcul de la direction de la lumiere reflechie
-			vec3 i = reflect(-o, m); //vecteur reflechi
 
 			// calcul  des dot products de la microfacette
 			float din = ddot(i, N);
-			float dim = ddot(i, m);
 			float dom = ddot(o, m);
+			float dnm = ddot(N, m);
 
 			// calcul des méthodes
 			float F = Fresnel(u_Ni, dim);
@@ -261,37 +261,37 @@ void main(void)
 			// revoir la formule BRDF et le mélange final Li * FR * costeta
 			// mettre des options de melange coherants
 			// calculs partiels
-			vec3 Lo = vec3(0);
+			vec3 Lo = vec3(0.0	);
 			// change le comportement en fonction du mix choisi
 			if(u_mix == 1.0){ // refract only
 				Lo = vec3(refra_color);
 			}
-			else if(u_mix == 2.0){
-				vec3 diffuse_BRDF = (1.0-F) (Kd / PI);
-				vec3 specular_BRDF = vec3((F*D*G) / (4.0 * din * don));
-				cumul += (diffuse_BRDF + specular_BRDF) * din;
-			}
-			else if(u_mix == 3.0){ // reflectio et refraction avec fresnel
+			else if(u_mix == 2.0){ // reflectio et refraction avec fresnel
 				// calculs partiels
 
-				if(u_Ni > 4.8){
+				if(u_Ni > 4.9){
 					Lo = refl_color;
 				}
 				else {
 					vec3 diffuse_BRDF = (Kd / PI);
 					vec3 specular_BRDF = vec3((F*D*G) / (4.0 * din * don));
-				 	Lo = ((1.0-F)*diffuse_BRDF  +  specular_BRDF) * din;
+					//vec3 specular_BRDF = vec3((F*D*G) / (4.0 * dim * dom)); sinon
+				 	Lo = refl_color * ((1.0-F)*diffuse_BRDF  +  specular_BRDF) * din;
+
+					// apply ratio for more ambiant light
+					Lo *= u_factor;
 				}
 			}
 			else { // mirroir
 				Lo = vec3(refl_color);
 			}
-			cumul += vec3(Lo)/dnm;
+			cumul += vec3(Lo);
+		//}
 
-		}
 	}
 	
 	gl_FragColor = vec4(cumul/u_Sample, 1.0);
+	//gl_FragColor = vec4(textureCube(skybox, N));
 
 }
 
