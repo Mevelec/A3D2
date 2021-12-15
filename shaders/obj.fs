@@ -63,7 +63,7 @@ float Random(float x, float y)
 
 //--------------------
 vec3 FromTangeanteToWorld(vec3 N, vec3 vec){
-    vec3 up        = vec3(0.0, 1.0, 0.0); // world up is (0, 0, 1)
+    vec3 up        = vec3(0.0, 1.0, 0.0); // world up is (0, 1, 0)
 	if(dot(N, up) > 0.999){
 		up = vec3(0.0, 0.0, 1.0);
 	}
@@ -268,8 +268,10 @@ void main(void)
 			}
 			else if(u_mix == 2.0){ // reflectio et refraction avec fresnel
 				// calculs partiels
-
-				if(u_Ni > 4.9){
+				if(din*don < 0.0001 || dim*dom < 0.0001 || don < 0.0001){
+					Lo = 0;	
+				}
+				else if(u_Ni > 4.9){
 					Lo = refl_color;
 				}
 				else {
