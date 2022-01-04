@@ -35,6 +35,7 @@ varying mat3 u_revese;	     // matrice de correction de la transformation pour l
 uniform sampler2D s_texture_color; 
 uniform sampler2D s_texture_roughness;
 uniform sampler2D s_texture_normal;
+uniform sampler2D s_texture_ao;
 
 // Timelog
 uniform float u_time;        // temps actuel utilisé pour le sampling
@@ -63,6 +64,7 @@ float Random(float x, float y)
 
 //--------------------
 vec3 FromTangeanteToWorld(vec3 N, vec3 vec){
+	N = normalize(N);
     vec3 up        = vec3(0.0, 1.0, 0.0); // world up is (0, 1, 0)
 	if(dot(N, up) > 0.999){
 		up = vec3(0.0, 0.0, 1.0);
@@ -178,6 +180,7 @@ void main(void)
 	vec3 N = v_N;
 	float sigma = u_sigma;
 	vec3 Kd = u_Kd;
+	vec3 ao = vec3(1.0);
 
 	// Activation des textures 
 	if ( u_isTextured == 1.0){
@@ -185,6 +188,7 @@ void main(void)
  		N =  FromTangeanteToWorld(v_N, vec3(texture2D(s_texture_normal, v_texCoords)));
 		sigma =  texture2D(s_texture_roughness, v_texCoords).x; 	// C'est une image en nuance de gris, on ne peut utiliser qu'un seul cannal, ici le rouge avec .x
 		Kd = vec3(texture2D(s_texture_color, v_texCoords));
+		ao = vec3(texture2D(s_texture_ao, v_texCoords));
 	} 
 
 	vec3 o = normalize(CAM_POS - vec3(v_pos3D));   // fragment -> camera
@@ -269,7 +273,7 @@ void main(void)
 			else if(u_mix == 2.0){ // reflectio et refraction avec fresnel
 				// calculs partiels
 				if(din*don < 0.0001 || dim*dom < 0.0001 || don < 0.0001){
-					Lo = 0;	
+					Lo = vec3(0.0);	
 				}
 				else if(u_Ni > 4.9){
 					Lo = refl_color;
@@ -277,12 +281,12 @@ void main(void)
 				else {
 					vec3 diffuse_BRDF = (Kd / PI);
 					vec3 specular_BRDF = vec3((F*D*G) / (4.0 * din * don));
-					//vec3 specular_BRDF = vec3((F*D*G) / (4.0 * dim * dom)); sinon
 				 	Lo = refl_color * ((1.0-F)*diffuse_BRDF  +  specular_BRDF) * din;
-
 					// apply ratio for more ambiant light
-					Lo *= u_factor;
+
 				}
+				vec3 ambient = u_factor * Kd * ao;
+				Lo += ambient;
 			}
 			else { // mirroir
 				Lo = vec3(refl_color);
