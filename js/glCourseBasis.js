@@ -195,7 +195,7 @@ class objmesh {
 		this.shader.rMatrixUniform = gl.getUniformLocation(this.shader, "u_RMatrix");
 		this.shader.mvMatrixUniform = gl.getUniformLocation(this.shader, "u_MVMatrix");
 		this.shader.pMatrixUniform = gl.getUniformLocation(this.shader, "u_PMatrix");
-		this.shader.rsMatrixUniform = gl.getUniformLocation(this.shader, "uRotSkybox");
+		this.shader.rsMatrixUniform = gl.getUniformLocation(this.shader, "u_RotSkybox");
 
 		LIGHT.setShadersParams(this.shader);
 		MATERIAL.setShadersParams(this.shader);
@@ -210,7 +210,9 @@ class objmesh {
 		gl.uniformMatrix4fv(this.shader.rMatrixUniform, false, rotMatrix);
 		gl.uniformMatrix4fv(this.shader.mvMatrixUniform, false, mvMatrix);
 		gl.uniformMatrix4fv(this.shader.pMatrixUniform, false, pMatrix);
-		gl.uniformMatrix4fv(this.shader.rsMatrixUniform, false, CUBEMAP.rotMatrix);
+
+		mat4.toMat3(matcorrectskybox);
+		gl.uniformMatrix4fv(this.shader.rsMatrixUniform, false, 	CUBEMAP.rotMatrix			);
 	}
 	
 	// --------------------------------------------
@@ -544,7 +546,7 @@ class cubemap {
 		this.shader.rMatrixUniform = gl.getUniformLocation(this.shader, "u_RMatrix");
 		this.shader.pMatrixUniform = gl.getUniformLocation(this.shader, "u_PMatrix");
 		this.shader.mvMatrixUniform = gl.getUniformLocation(this.shader, "u_MVMatrix");
-		this.shader.rsMatrixUniform = gl.getUniformLocation(this.shader, "uRotSkybox");
+		this.shader.rsMatrixUniform = gl.getUniformLocation(this.shader, "u_RotSkybox");
 
 		mat4.identity(mvMatrix);
 		mat4.translate(mvMatrix, distCENTER);

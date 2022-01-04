@@ -12,7 +12,7 @@ varying vec3 v_N;
 
 varying vec2 v_texCoords;
 
-uniform mat4 uRotSkybox;
+uniform mat4 u_RotSkybox;
 varying mat3 u_revese;
 
 //------------------
@@ -61,7 +61,7 @@ mat4 inverse(mat4 m) {
 void main(void) {  
 	v_pos3D = u_MVMatrix * vec4(a_VertexPosition,1.0);
   v_texCoords = a_VertexTextureCoords;
-  u_revese = mat3(inverse(uRotSkybox) * inverse(u_RMatrix));
+  u_revese = u_RotSkybox;
 	v_N = normalize( mat3(u_RMatrix) * a_VertexNormal);
 
 	gl_Position = u_PMatrix * v_pos3D;
