@@ -21,13 +21,6 @@ uniform float u_factor;   // Active/Desactive la texture
 // Description de la camera
 vec3 CAM_POS = vec3(0.0); //position
 
-
-// TODO : delete 
-// description de la source lumineuse
-uniform vec3 u_light_pos;    // position de la source
-uniform vec3 u_light_color;  // couleur de la lumière emise
-uniform float u_light_pow;   // puissance de la lumière
-
 // description de la Skybox
 uniform samplerCube skybox;  // sampler de la cube map
 uniform mat4 u_RotSkybox;	     // matrice de correction de la transformation pour la cube map
@@ -41,9 +34,9 @@ uniform sampler2D s_texture_ao;
 uniform float u_time;        // temps actuel utilisé pour le sampling
 
 
-// ==============================================
+// ==================================================================================================================================================================================================
 //                    OUTILS
-// ==============================================
+// ==================================================================================================================================================================================================
 //--------------------
 // dot product entre 0 et +
 float ddot(vec3 a, vec3 b){
@@ -96,9 +89,9 @@ float Attenuation( float dnm, float don, float dom, float din, float dim){
 }
 
 
-// ==============================================
+// ==================================================================================================================================================================================================
 //                    Beckman
-// ==============================================
+// ==================================================================================================================================================================================================
 //--------------------
 float DistributionBeckman(float dnm, float sigma){
 	//calcul de cosTeta4 et tanTheta2
@@ -128,9 +121,9 @@ vec3 ImportanceSampleBeckman(vec2 Xi, vec3 N, float roughness){
     return FromTangeanteToWorld(N, H);
 }
 
-// ==============================================
+// ==================================================================================================================================================================================================
 //                     GGX
-// ==============================================
+// ==================================================================================================================================================================================================
 //--------------------
 float DistributionGGX(float dnm, float sigma){
 	float sigma2 = sigma*sigma;
@@ -167,34 +160,63 @@ vec3 ImportanceSampleGGX(vec2 Xi, vec3 N, float roughness)
     return FromTangeanteToWorld(N, H);
 }
 
+// ==================================================================================================================================================================================================
+//                     Dynamic / simplify methods
+// ==================================================================================================================================================================================================
+//--------------------
+vec3 Importance(float Distrib, vec2 Xi, vec3 N, float roughness){
+	vec3 m;
+	if(u_Distrib == 1.0){
+		m = ImportanceSampleBeckman(Xi, N, roughness);
+	}
+	else {
+		m = ImportanceSampleGGX(Xi, N, roughness);
+	}
+	return m;
+}
 
-// ==============================================
-//                   MAIN 
-// ==============================================
-void main(void)
-{
+//--------------------
+float Distribution(float Distrib, float dnm, float sigma){
+	float D;
+	if(u_Distrib == 1.0){ //use correct Distribution
+		D = DistributionBeckman(dnm, sigma);
+	}
+	else {
+		D = DistributionGGX(dnm, sigma);
+	}
+	return D;
+}
 
-	float totalWeight = 0.0;    
-	vec3 cumul = vec3(0.0);	
+//--------------------
+vec3 RefractColor(mat4 RotSkybox, vec3 o, vec3 n, float ni1, float ni2){
+	vec3 refra = mat3(RotSkybox) * refract(-o, n, ni1/ni2);
+	return vec3(textureCube(skybox, refra));
+}
 
-	vec3 N = v_N;
-	float sigma = u_sigma;
-	vec3 Kd = u_Kd;
-	vec3 ao = vec3(1.0);
+//--------------------
+vec3 ReflectColor(mat4 RotSkybox, vec3 i){
+	vec3 refl =  mat3(RotSkybox) * i;
+	return vec3(textureCube(skybox, refl));
+}
 
-	// Activation des textures 
-	if ( u_isTextured == 1.0){
-		// On utilise la roughness & normal de la texture 
- 		N =  FromTangeanteToWorld(v_N, vec3(texture2D(s_texture_normal, v_texCoords)));
-		sigma =  texture2D(s_texture_roughness, v_texCoords).x; 	// C'est une image en nuance de gris, on ne peut utiliser qu'un seul cannal, ici le rouge avec .x
-		Kd = vec3(texture2D(s_texture_color, v_texCoords));
-		ao = vec3(texture2D(s_texture_ao, v_texCoords));
-	} 
 
-	vec3 o = normalize(CAM_POS - vec3(v_pos3D));   // fragment -> camera
+// ==================================================================================================================================================================================================
+//                    Cutted shaders
+// ==================================================================================================================================================================================================
+vec3 BRDF(vec3 Kd, vec3 Li, float ni, float sigma, mat4 rotSkybox, float distrib, float din, float dim, float don, float dom, float dnm){
+	// calcul des méthodes
+	float F = Fresnel(ni, dim);
+	float D = Distribution(distrib, dnm, sigma);
+	float G = Attenuation( dnm, don, dom, din, dim);
 
-	// calcul  des dot products du fragment
-	float don = ddot(o, N);
+	// Line to mix reflected color with aborbed color
+	vec3 diffuse_BRDF = (Kd / PI);
+	vec3 specular_BRDF = vec3((F*D*G) / (4.0 * din * don));
+	return Li * ((1.0-F)*diffuse_BRDF  +  specular_BRDF) * din;
+}
+
+vec3 Microfacettes(vec3 o, vec3 n, float sigma, vec3 Kd, vec3 ao ){
+	float don = ddot(o, n);
 
 	// create random based on time and direction
 	float rand = 0.0;
@@ -202,7 +224,10 @@ void main(void)
 	rand = Random(rand, v_pos3D.z);
 	rand = Random(rand, u_time);	
 
+
 	// foreach sample
+	vec3 cumul = vec3(0.0);	
+	float factor = 0.0;
 	for(float it = 0.0; it < 10000.0; it++) {
 		// break loop when the number of sample is reached
 		// must be made  like this because of opengl version not allowing  dynamic loops (conditionnal should be constant)
@@ -215,46 +240,31 @@ void main(void)
 		float y = Random(rand, it*8.0);
 				
 		// calculate Importance
-		vec3 m = ImportanceSampleBeckman(vec2(x, y), N, sigma);
-		if(u_Distrib == 1.0){
-			m = ImportanceSampleBeckman(vec2(x, y), N, sigma);
-		}
-		else {
-			m = ImportanceSampleGGX(vec2(x, y), N, sigma);
-		}
+		vec3 m = Importance(u_Distrib, vec2(x, y), n, sigma);
 
 		vec3 i = reflect(-o, m); //vecteur reflechi
 		float dim = ddot(i, m);
+		float dom = ddot(o, m);
 
-		// check if microfacet participate to lighting
-		//if(dim > 0.0)
-		//{
-
-			// calcul de la direction de la lumiere reflechie
+		// check if microfacet participate to lighting / is visible
+		if(dom > 0.0)
+		{
+			factor += 1.0;
 
 			// calcul  des dot products de la microfacette
-			float din = ddot(i, N);
-			float dom = ddot(o, m);
-			float dnm = ddot(N, m);
+			float din = ddot(i, n);
+			float dnm = ddot(n, m);
 
 			// calcul des méthodes
 			float F = Fresnel(u_Ni, dim);
-			float D;
-			if(u_Distrib == 1.0){ //use correct Distribution
-				D = DistributionBeckman(dnm, sigma);
-			}
-			else {
-				D = DistributionGGX(dnm, sigma);
-			}
+			float D = Distribution(u_Distrib, dnm, sigma);
 			float G = Attenuation( dnm, don, dom, din, dim);
 			
 			// calcul reflection color skymap
-			vec3 refl =  mat3(u_RotSkybox) * i;
-			vec3 refl_color = vec3(textureCube(skybox, refl));
+			vec3 refl_color = ReflectColor(u_RotSkybox, i);
 
 			// calcul refraction color skymap
-			vec3 refra = mat3(u_RotSkybox) * refract(-o, m, 1.0/u_Ni);
-			vec3 refra_color = vec3(textureCube(skybox, refra));
+			vec3 refra_color = RefractColor(u_RotSkybox, o, m, 1.0, u_Ni);
 
 
 			// Line to mix reflected color with aborbed color
@@ -279,11 +289,7 @@ void main(void)
 					Lo = refl_color;
 				}
 				else {
-					vec3 diffuse_BRDF = (Kd / PI);
-					vec3 specular_BRDF = vec3((F*D*G) / (4.0 * din * don));
-				 	Lo = refl_color * ((1.0-F)*diffuse_BRDF  +  specular_BRDF) * din;
-					// apply ratio for more ambiant light
-
+					vec3 r = BRDF(Kd, refl_color, u_Ni, sigma, u_RotSkybox, u_Distrib, din, dim, don, dom, dnm);
 				}
 				vec3 ambient = u_factor * Kd * ao;
 				Lo += ambient;
@@ -292,13 +298,57 @@ void main(void)
 				Lo = vec3(refl_color);
 			}
 			cumul += vec3(Lo);
-		//}
+		}
+	}
+	return cumul/factor;
+}
+// ==================================================================================================================================================================================================
+//                   MAIN 
+// ==================================================================================================================================================================================================
+void main(void)
+{
 
+	//*************************************
+	// Prepare les donnnees du materiau
+	// color, ao, normal ...
+	vec3 N = v_N;
+	float sigma = u_sigma;
+	vec3 Kd = u_Kd;
+	vec3 ao = vec3(1.0);
+
+	// Activation des textures 
+	if ( u_isTextured == 1.0){
+		// On utilise la roughness & normal de la texture 
+ 		N =  FromTangeanteToWorld(v_N, vec3(texture2D(s_texture_normal, v_texCoords))); // les normales maps sont dans l'espace tangeant
+		sigma =  texture2D(s_texture_roughness, v_texCoords).x; 	// C'est une image en nuance de gris, on ne peut utiliser qu'un seul cannal, ici le rouge avec .x
+		Kd = vec3(texture2D(s_texture_color, v_texCoords));
+		ao = vec3(texture2D(s_texture_ao, v_texCoords));
+	} 
+	vec3 o = normalize(CAM_POS - vec3(v_pos3D));   // fragment -> camera
+	vec3 res = vec3(1.0,0.0, 1.0);
+
+	
+	//*************************************
+	if(u_mix> 10.0){ // if is not a microfacette render
+	// precalculs
+		vec3 m = N;
+		vec3 i = reflect(-o, m); //vecteur reflechi
+
+		// calcul  des dot products
+		float din = ddot(i, N);
+		float dim = ddot(i, m);
+		float don = ddot(o, N);
+		float dom = ddot(o, m);
+		float dnm = ddot(N, m);
+		vec3 refl_color = ReflectColor(u_RotSkybox, i);
+
+		res = BRDF(Kd, refl_color, u_Ni, sigma, u_RotSkybox, u_Distrib, din, dim, don, dom, dnm);
+	}
+	else {
+		res = Microfacettes(o, N, sigma, Kd, ao );
 	}
 	
-	gl_FragColor = vec4(cumul/u_Sample, 1.0);
-	//gl_FragColor = vec4(textureCube(skybox, N));
-
+	gl_FragColor = vec4(res, 1.0);
 }
 
 
