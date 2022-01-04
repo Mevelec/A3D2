@@ -87,11 +87,11 @@
 
 							
 							<label for="sample">Nombre d'echantillon :  </label><br>
-							<input type="number" step="1"  id="sample" min="0" value="10" oninput="MATERIAL.sample = value;">
+							<input type="number" step="1"  id="sample" min="0" value="3" oninput="MATERIAL.sample = value;">
 							<br>
 
 							<label for="sample">BRDF Factor :  </label><br>
-							<input type="number" step="0.1"  id="sample" min="0" value="0" oninput="MATERIAL.factor = value;">
+							<input type="number" step="0.1"  id="sample" min="0" value="1" oninput="MATERIAL.factor = value;">
 							<br>
 						</fieldset>
 

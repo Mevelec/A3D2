@@ -28,7 +28,7 @@ class Material{
 		this.distrib = 0;
 		this.sample = 10;
 		this.mix = 0;
-		this.factor = 0;
+		this.factor = 1.0;
 		this.isTextured = 1.0; 
 	}
 
@@ -126,6 +126,12 @@ class objmesh {
 		this.texture_normal.onload = this.onLoadedImage.bind(this, {id : 3});
 		this.texture_normal.crossOrigin = "anonymous"
 		this.texture_normal.src = "./Textures/bricks_2/normal.png";
+
+		// bind on 2 wit sampler name color_nm
+		this.texture_ao = new Image();
+		this.texture_ao.onload = this.onLoadedImage.bind(this, {id : 4});
+		this.texture_ao.crossOrigin = "anonymous"
+		this.texture_ao.src = "./Textures/bricks_2/ao.png";
 		
 		//TODO : Reussir à passer les id dans l'appel de onLoadedImage
 	}
@@ -150,6 +156,11 @@ class objmesh {
 			gl.activeTexture(gl.TEXTURE3);
 			gl.bindTexture(gl.TEXTURE_2D, this.texture3);
 			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, this.texture_normal);
+		} else if (obj.id == 4 ){
+			this.texture4 = gl.createTexture();
+			gl.activeTexture(gl.TEXTURE4);
+			gl.bindTexture(gl.TEXTURE_2D, this.texture4);
+			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, this.texture_ao);
 		}
 
 
@@ -224,6 +235,11 @@ class objmesh {
 			gl.activeTexture(gl.TEXTURE3);
 			gl.bindTexture(gl.TEXTURE_2D, this.texture3);
 			gl.uniform1i(this.shader.texture_normal, 3);
+
+			this.shader.texture_ao = gl.getUniformLocation(this.shader, "s_texture_ao");
+			gl.activeTexture(gl.TEXTURE4);
+			gl.bindTexture(gl.TEXTURE_2D, this.texture4);
+			gl.uniform1i(this.shader.texture_ao, 4);
 
 
 
