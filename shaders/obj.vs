@@ -61,7 +61,8 @@ mat4 inverse(mat4 m) {
 void main(void) {  
 	v_pos3D = u_MVMatrix * vec4(a_VertexPosition,1.0);
   v_texCoords = a_VertexTextureCoords;
-  u_revese = u_RotSkybox;
+  u_revese = mat3(inverse(u_RotSkybox) * inverse(u_RMatrix));
+
 	v_N = normalize( mat3(u_RMatrix) * a_VertexNormal);
 
 	gl_Position = u_PMatrix * v_pos3D;

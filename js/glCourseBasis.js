@@ -211,8 +211,9 @@ class objmesh {
 		gl.uniformMatrix4fv(this.shader.mvMatrixUniform, false, mvMatrix);
 		gl.uniformMatrix4fv(this.shader.pMatrixUniform, false, pMatrix);
 
-		mat4.toMat3(matcorrectskybox);
-		gl.uniformMatrix4fv(this.shader.rsMatrixUniform, false, 	CUBEMAP.rotMatrix			);
+
+		gl.uniformMatrix4fv(this.shader.rsMatrixUniform, false, 	
+			CUBEMAP.rotMatrix			);
 	}
 	
 	// --------------------------------------------
