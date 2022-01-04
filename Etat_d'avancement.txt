@@ -1,0 +1,28 @@
+A rendre pour le 30 janvier au soir (18h officiellement, ouvert jusqu'à minuit) :
+
+ok 	    mise en place de l'échantillonnage d'importance 
+TODO	interface conviviale pour modifier les paramètres
+ok	    indice de réfraction
+ok 	    rugosité
+ok	    nombre de "rayons" par pixel
+CHECK 	éventuellement couleur de l'objet (si vous le faites : attention à la physique)
+
+ok	objets
+ok	cartes d'environnements
+
+
+Proposition d'options :
+NO	    Mise en place de la transparence openGL (autres shaders, à la place d'un rendu "réaliste")
+TODO	Affichage en mode "face" Phong avec ou sans les fils de fer en plus (combiner faces et fil de fer)
+CHECK (lire l'article)  	Lire l'article de Bruce Walter 2007 EG (GGX), et développer la transparence rugueuse
+NO**    Textures procédurales simples (bois, marbre, etc.) [difficile]
+NO	Gérer plusieurs objets, chacun avec son mode d'affichage choisi par l'utilisateur
+
+(**) A voir 
+
+Vous serez évalués sur :
+la correction du code d'un point de vue physique et algorithmique
+la qualité du code
+la facilité d'utilisation de l'interface
+
+
