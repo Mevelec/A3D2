@@ -211,9 +211,23 @@ class objmesh {
 		gl.uniformMatrix4fv(this.shader.mvMatrixUniform, false, mvMatrix);
 		gl.uniformMatrix4fv(this.shader.pMatrixUniform, false, pMatrix);
 
-
+		var rot = mat4.create();
+		mat4.inverse(rotMatrix, rot);
+		var rotSky = mat4.create();
+		mat4.inverse(CUBEMAP.rotMatrix, rotSky);
+		var res = mat4.create();
+		
+		mat4.multiply(
+			rotSky,
+			rot,
+			res
+		)
+		mat4.toMat3(
+			res
+		)			
 		gl.uniformMatrix4fv(this.shader.rsMatrixUniform, false, 	
-			CUBEMAP.rotMatrix			);
+			res
+		);
 	}
 	
 	// --------------------------------------------

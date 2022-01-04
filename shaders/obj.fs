@@ -30,7 +30,7 @@ uniform float u_light_pow;   // puissance de la lumière
 
 // description de la Skybox
 uniform samplerCube skybox;  // sampler de la cube map
-varying mat3 u_revese;	     // matrice de correction de la transformation pour la cube map
+uniform mat4 u_RotSkybox;	     // matrice de correction de la transformation pour la cube map
 
 uniform sampler2D s_texture_color; 
 uniform sampler2D s_texture_roughness;
@@ -249,11 +249,11 @@ void main(void)
 			float G = Attenuation( dnm, don, dom, din, dim);
 			
 			// calcul reflection color skymap
-			vec3 refl =  u_revese * i;
+			vec3 refl =  mat3(u_RotSkybox) * i;
 			vec3 refl_color = vec3(textureCube(skybox, refl));
 
 			// calcul refraction color skymap
-			vec3 refra = u_revese * refract(-o, m, 1.0/u_Ni);
+			vec3 refra = mat3(u_RotSkybox) * refract(-o, m, 1.0/u_Ni);
 			vec3 refra_color = vec3(textureCube(skybox, refra));
 
 
