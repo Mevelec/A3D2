@@ -36,7 +36,7 @@
 						<fieldset>
 							<legend> Parametrage du materiau </legend>
 
-							<label for="TextureActive"> Desactivation des textures : </label>
+							<label for="TextureActive"> Activation des textures : </label>
 							<input type="checkbox" name="TextureActive" id="TextureActive" onclick="MATERIAL.updateIsTextured(value)">
 							<br>
 							
@@ -58,9 +58,15 @@
 
 							<label for="mix"> Type de materiel : </label>
 							<select name="mix" id="mix">
-								<option value="0" selected=true onclick="MATERIAL.mix = value;"> Reflection seule </option>
-								<option value="1" onclick="MATERIAL.mix = value;"> Refraction seule </option>
-								<option value="2" onclick="MATERIAL.mix = value;"> BRDF </option>
+								<option value="0"  selected=true onclick="MATERIAL.mix = value;"> mirroir parfait </option>
+								<option value="1"  selected=false onclick="MATERIAL.mix = value;"> transparence parfaite </option>
+								<option value="2"  selected=false onclick="MATERIAL.mix = value;"> transparence + mirroir fresnel </option>
+								<option value="3"  selected=false onclick="MATERIAL.mix = value;"> mirroir coloré par texture </option>
+								<option value="10" selected=false onclick="MATERIAL.mix = value;"> mirroir parfait depoli (sampl) </option>
+								<option value="11" selected=false onclick="MATERIAL.mix = value;"> transparence parfait depoli (sampl) </option>
+								<option value="12" selected=false onclick="MATERIAL.mix = value;"> transparence + mirroir fresnel (sampl)) </option>
+								<option value="4"  selected=false onclick="MATERIAL.mix = value;"> mirroir parfait avec bump </option>
+								<option value="13" selected=false onclick="MATERIAL.mix = value;"> mirroir + normal depoli </option>
 							</select>
 
 <!--
