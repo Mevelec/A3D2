@@ -15,7 +15,7 @@
 
 	</head>
 
-	<body onload="webGLStart();">
+	<body onload="webGLStart(), updateUI(0)">
 		<table>
 			<tr>
 				<td>
@@ -30,18 +30,18 @@
 
 							<label for="mix"> Type de materiel : </label>
 							<select name="mix" id="mix" onchange="updateUI(value)">
-								<option value="0"  selected=true onclick="MATERIAL.mix = value;"> Mirroir parfait </option>
-								<option value="1"  selected=false onclick="MATERIAL.mix = value;"> Transparence parfaite </option>
-								<option value="2"  selected=false onclick="MATERIAL.mix = value;"> Transparence et mirroir Fresnel </option>
-								<option value="3"  selected=false onclick="MATERIAL.mix = value;"> Mirroir coloré par texture </option>
-								<option value="4"  selected=false onclick="MATERIAL.mix = value;"> Mirroir parfait avec bump </option>
-								<option value="5"  selected=false onclick="MATERIAL.mix = value;"> BRDF simple </option>
+								<option value="0"  selected=selected onclick="MATERIAL.mix = value;"> Mirroir parfait </option>
+								<option value="1"  onclick="MATERIAL.mix = value;"> Transparence parfaite </option>
+								<option value="2"  onclick="MATERIAL.mix = value;"> Transparence et mirroir Fresnel </option>
+								<option value="3"  onclick="MATERIAL.mix = value;"> Mirroir coloré par texture </option>
+								<option value="4"  onclick="MATERIAL.mix = value;"> Mirroir parfait avec bump </option>
+								<option value="5"  onclick="MATERIAL.mix = value;"> BRDF simple </option>
 								
-								<option value="10" selected=false onclick="MATERIAL.mix = value;"> Mirroir parfait dépoli (sampling) </option>
-								<option value="11" selected=false onclick="MATERIAL.mix = value;"> Transparence parfaite dépolie (sampling) </option>
-								<option value="12" selected=false onclick="MATERIAL.mix = value;"> Transparence et mirroir de Fresnel dépoli (sampling) </option>
-								<option value="13" selected=false onclick="MATERIAL.mix = value;"> Mirroir et normales dépoli </option>
-								<option value="14"  selected=false onclick="MATERIAL.mix = value;"> BRDF (sampling)</option>
+								<option value="10" onclick="MATERIAL.mix = value;"> Mirroir parfait dépoli (sampling) </option>
+								<option value="11" onclick="MATERIAL.mix = value;"> Transparence parfaite dépolie (sampling) </option>
+								<option value="12" onclick="MATERIAL.mix = value;"> Transparence et mirroir de Fresnel dépoli (sampling) </option>
+								<option value="13" onclick="MATERIAL.mix = value;"> Mirroir et normales dépoli </option>
+								<option value="14" onclick="MATERIAL.mix = value;"> BRDF (sampling)</option>
 							</select>
 						</fieldset>
 
@@ -74,7 +74,7 @@
 							</div>
 
 							<div id="divNi">
-								<label for="Ni">indice du milieu (Ni)</label> <br>
+								<label for="Ni">Indice du milieu (Ni)</label> <br>
 								<input type="range" step="0.01" id="Ni" name="Ni" min="1" max="5" value="1.3" oninput="MATERIAL.Ni = Number(value); this.nextElementSibling.value = this.value">
 								<input type="number" step="0.01" min="1" max="5" value="1.3" oninput="MATERIAL.Ni = Number(value); this.previousElementSibling.value = this.value"/><br>	
 							</div>
@@ -84,7 +84,7 @@
 
 						<fieldset >
 							
-							<legend> Paramêtres de rendu  </legend>
+							<legend> Paramètres de rendu  </legend>
 							<label for="mode"> Mode : </label>
 							<select name="mode" id="mode">
 								<option value=0 selected=true onclick="MATERIAL.uDistrib = value;"> Ggx </option>

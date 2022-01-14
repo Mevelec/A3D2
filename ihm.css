@@ -6,9 +6,7 @@
     display:block;
 }
 
-fieldset{
-    display:none;
-}
+
 
 #fieldsetVisible{
     display:block

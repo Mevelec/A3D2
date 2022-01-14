@@ -338,7 +338,7 @@ void main(void)
 	vec3 N = v_N;
 	float sigma = u_sigma;
 	vec3 Kd = u_Kd;
-	vec3 ao = vec3(1.0);
+	vec3 ao = vec3(0.0);
 	
 	vec3 o = normalize(CAM_POS - vec3(v_pos3D));   // fragment -> camera
 	vec3 Lo = vec3(1.0,0.0, 1.0);
