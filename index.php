@@ -36,7 +36,7 @@
 						<fieldset>
 							<legend> Parametrage du materiau </legend>
 
-							<label for="TextureActive"> Activation des textures : </label>
+							<label for="TextureActive"> Desactivation des textures : </label>
 							<input type="checkbox" name="TextureActive" id="TextureActive" onclick="MATERIAL.updateIsTextured(value)">
 							<br>
 							
@@ -45,31 +45,22 @@
 							<br>
 							
 							<label for="Sigma">Sigma/Roughness : </label><br>
-							<input type="range" step="0.01" id="sigma" name="sigma" min="0" max="1" value="0.2" oninput="MATERIAL.sigma = Number(value); this.nextElementSibling.value = this.value">
-							<input type="number" step="0.01" min="0" max="1" value="0.2" oninput="MATERIAL.sigma = Number(value); this.previousElementSibling.value = this.value"/>
+							<input type="range" step="0.01" id="sigma" name="sigma" min="0" max="1" value="0.2" oninput="MATERIAL.sigma = Number(value)">
 							<br>
 
 							<label for="Ni">indice du milieu (Ni)</label> <br>
-							<input type="range" step="0.01" id="Ni" name="Ni" min="1" max="5" value="1.3" oninput="MATERIAL.Ni = Number(value); this.nextElementSibling.value = this.value">
-							<input type="number" step="0.01" min="1" max="5" value="1.3" oninput="MATERIAL.Ni = Number(value); this.previousElementSibling.value = this.value"/>
+							<input type="range" step="0.01" id="Ni" name="Ni" min="1" max="5" value="1.3" oninput="MATERIAL.Ni = Number(value)">
 							<br>	
 							
 							<label for="transmission"> transmission : [ 0;1 ] </label><br>
-							<input type="range" name="transmission" id="transmission" min="0" max="1" step="0.01" value="0" oninput="MATERIAL.transmission = Number(value) ; this.nextElementSibling.value = this.value">
-							<input type="number" min="0" max="1" step="0.01" value="0" oninput="MATERIAL.transmission = Number(value) ; this.previousElementSibling.value = this.value">
+							<input type="range" name="transmission" id="transmission" min="0" max="1" step="0.01" value="0" oninput="MATERIAL.transmission = Number(value) ; console.log(value)">
 							<br> <br>
 
 							<label for="mix"> Type de materiel : </label>
 							<select name="mix" id="mix">
-								<option value="0"  selected=true onclick="MATERIAL.mix = value;"> mirroir parfait </option>
-								<option value="1"  selected=false onclick="MATERIAL.mix = value;"> transparence parfaite </option>
-								<option value="2"  selected=false onclick="MATERIAL.mix = value;"> transparence + mirroir fresnel </option>
-								<option value="3"  selected=false onclick="MATERIAL.mix = value;"> mirroir coloré par texture </option>
-								<option value="10" selected=false onclick="MATERIAL.mix = value;"> mirroir parfait depoli (sampl) </option>
-								<option value="11" selected=false onclick="MATERIAL.mix = value;"> transparence parfait depoli (sampl) </option>
-								<option value="12" selected=false onclick="MATERIAL.mix = value;"> transparence + mirroir fresnel (sampl)) </option>
-								<option value="4"  selected=false onclick="MATERIAL.mix = value;"> mirroir parfait avec bump </option>
-								<option value="13" selected=false onclick="MATERIAL.mix = value;"> mirroir + normal depoli </option>
+								<option value="0" selected=true onclick="MATERIAL.mix = value;"> Reflection seule </option>
+								<option value="1" onclick="MATERIAL.mix = value;"> Refraction seule </option>
+								<option value="2" onclick="MATERIAL.mix = value;"> BRDF </option>
 							</select>
 
 <!--
@@ -96,11 +87,11 @@
 
 							
 							<label for="sample">Nombre d'echantillon :  </label><br>
-							<input type="number" step="1"  id="sample" min="0" value="3" oninput="MATERIAL.sample = value;">
+							<input type="number" step="1"  id="sample" min="0" value="10" oninput="MATERIAL.sample = value;">
 							<br>
 
 							<label for="sample">BRDF Factor :  </label><br>
-							<input type="number" step="0.1"  id="sample" min="0" value="1" oninput="MATERIAL.factor = value;">
+							<input type="number" step="0.1"  id="sample" min="0" value="0" oninput="MATERIAL.factor = value;">
 							<br>
 						</fieldset>
 
