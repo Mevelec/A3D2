@@ -32,8 +32,14 @@ var textures = {
 function updateUI(mode){
     var paramsMode = params[mode]
     var textureMode = textures[mode]
-    console.log(mode);
-    console.log(textureMode);
+    //console.log(mode);
+    //console.log(textureMode);
+
+    var fieldsets = document.getElementsByTagName("fieldset");
+
+    for(var i = 0 ; i < fieldsets.length ; i++) {
+        fieldsets[i].style.display = "block"
+    }
 
     var divTextures = document.getElementById('divTextures'); 
     var divSigma = document.getElementById('divSigma'); 
