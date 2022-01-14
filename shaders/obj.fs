@@ -13,7 +13,6 @@ uniform float u_Sample; 	  // nombre d'echantillon
 uniform vec3 u_Kd;            // couleur
 uniform float u_sigma;        // roughness du materiau
 uniform float u_Ni;           // indice du milieu ~ 1.3 pour l'eau
-uniform float u_transmission; //taux de transmission de la refraction
 uniform float u_mix; 		  // type de mixage
 uniform float u_factor;   // Active/Desactive la texture 
 
@@ -285,8 +284,6 @@ vec3 Microfacettes(vec3 o, vec3 n, float sigma, vec3 Kd, vec3 ao, float mode){
 			}
 			else if ( mode == 4.0){ //BRDF (sampling)
 				vec3 refra_color = RefractColor(u_RotSkybox, o, m, 1.0, u_Ni); // calcul refraction color skymap
-				// Line to mix reflected color with aborbed color
-				Kd = Kd*(1.0-u_transmission) + vec3(refra_color)*u_transmission; // ligne pour manibuler l'opacite du materiau
 				
 				vec3 i = reflect(-o, m); //vecteur reflechi
 				float din = ddot(i, n);
@@ -334,7 +331,7 @@ void main(void)
 	vec3 res = vec3(1.0,0.0, 1.0);
 
 
-	float v_mix = 14.0;
+	float v_mix = u_mix;
 	//*************************************	
 	if(v_mix < 10.0){ // if is not a microfacette render
 		if(v_mix == 0.0 ){ // mirroir parfait
@@ -396,7 +393,7 @@ void main(void)
 			if ( u_texture_ao == 1.0){
 				ao = vec3(texture2D(s_texture_ao, v_texCoords));
 			}
-			
+
 			// precalculs
 			vec3 m = N;
 			vec3 i = reflect(-o, m); //vecteur reflechi

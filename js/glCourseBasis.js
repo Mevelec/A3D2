@@ -29,16 +29,24 @@ class Material{
 		this.sample = 10;
 		this.mix = 0;
 		this.factor = 1.0;
-		this.isTextured = 1.0; 
+		
+		this.textureColor = 0.0; 
+		this.textureRoughness = 0.0; 
+		this.textureNormal = 0.0; 
+		this.textureAO = 0.0; 
 	}
 
-	updateIsTextured(val){
-		
-		if (this.isTextured == 0.0) {
-			this.isTextured = 1.0; 
-		} else {
-			this.isTextured = 0.0;
-		}
+	updateIsTextureColor(val){
+		this.textureColor = !this.textureColor;
+	}
+	updateIsTextureRoughness(val){
+		this.textureRoughness = !this.textureRoughness ; 
+	}
+	updateIsTextureNormal(val){
+		this.textureNormal = !this.textureNormal;
+	}
+	updateIsTextureAO(val){
+		this.textureAO = !this.textureAO;
 	}
 
 	// --------------------------------------------
@@ -46,25 +54,32 @@ class Material{
 		shader.mKdUniform = gl.getUniformLocation(shader, "u_Kd");
 		shader.mSigmaUniform = gl.getUniformLocation(shader, "u_sigma");
 		shader.mNiUniform = gl.getUniformLocation(shader, "u_Ni");
-		shader.mTransmissionsUniform = gl.getUniformLocation(shader, "u_transmission");
 		shader.uTime = gl.getUniformLocation(shader, "u_time");
 		shader.uDistrib = gl.getUniformLocation(shader, "u_Distrib");
 		shader.uSample = gl.getUniformLocation(shader, "u_Sample");
 		shader.uMix = gl.getUniformLocation(shader, "u_mix");
-		shader.uIsTextured = gl.getUniformLocation(shader, "u_isTextured");
+
+		shader.uTextureColor = gl.getUniformLocation(shader, "u_texture_color");
+		shader.uTextureRoughness = gl.getUniformLocation(shader, "u_texture_roughness");
+		shader.uTextureNormal = gl.getUniformLocation(shader, "u_texture_normal");
+		shader.uTextureAO = gl.getUniformLocation(shader, "u_texture_ao");
+
 		shader.uFactor = gl.getUniformLocation(shader, "u_factor");
 
-		gl.uniform3fv(shader.mKdUniform, this.Kd);
+		gl.uniform3fv(shader.mKdUniform,   this.Kd);
 		gl.uniform1f(shader.mSigmaUniform, this.sigma);
-		gl.uniform1f(shader.mNiUniform, this.Ni);
-		gl.uniform1f(shader.mTransmissionsUniform, this.transmission);
+		gl.uniform1f(shader.mNiUniform,    this.Ni);
 		gl.uniform1f(shader.uTime, TIME);
 		gl.uniform1f(shader.uDistrib, this.distrib);
-		gl.uniform1f(shader.uSample, this.sample);
-		gl.uniform1f(shader.uMix, this.mix);
-		gl.uniform1f(shader.uIsTextured, this.isTextured);
-		gl.uniform1f(shader.uFactor, this.factor);
+		gl.uniform1f(shader.uSample,  this.sample);
+		gl.uniform1f(shader.uMix,     this.mix);
 
+		gl.uniform1f(shader.uTextureColor,     this.textureColor);
+		gl.uniform1f(shader.uTextureRoughness, this.textureRoughness);
+		gl.uniform1f(shader.uTextureNormal,    this.textureNormal);
+		gl.uniform1f(shader.uTextureAO,        this.textureAO);
+
+		gl.uniform1f(shader.uFactor, this.factor);
 	}
 }
 
