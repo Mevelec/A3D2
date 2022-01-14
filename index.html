@@ -30,15 +30,33 @@
 
 					<!-- ZONE DE PARAMETRAGE -->
 					<form>
+						<fieldset>
+							<legend> Parametrage de la lumiere </legend>
+							<label for="lightPower">Puissance de la lumiere : </label><br>
+							<input type="number" step="0.1" id="lightPower" min="0" value="0" oninput="LIGHT.power = Number(value)">
+							<br>
+							<label for="lightColor">Couleur de la lumiere : </label><br>
+							<input type="color" id="lightColor" name="lightColor" value="#ffffff" oninput="LIGHT.color = convertRGBA(value)">
 
+						</fieldset>	
 						<fieldset>
 							<legend onclick = "showDiv('divMaterialParam')"> Parametrage du materiau </legend>
 							<div id = 'divMaterialParam' class='noVisible'>
-
-								<label for="TextureActive"> Desactivation des textures : </label>
-							<input type="checkbox" name="TextureActive" id="TextureActive" onclick="MATERIAL.updateIsTextured(value)">
-							<br>
-							
+							<fieldset>
+								<legend> Textures </legend>
+								<label for="TextureColor"> Couleur : </label>
+								<input type="checkbox" name="TextureColor" id="TextureColor" onclick="MATERIAL.updateIsTextureColor(value)">
+								<br>
+								<label for="TextureRoughness"> Rugausité : </label>
+								<input type="checkbox" name="TextureRoughness" id="TextureRoughness" onclick="MATERIAL.updateIsTextureRoughness(value)">
+								<br>
+								<label for="TextureNormal"> Normale : </label>
+								<input type="checkbox" name="TextureNormal" id="TextureNormal" onclick="MATERIAL.updateIsTextureNormal(value)">
+								<br>
+								<label for="TextureAO"> Ambiante occlusion : </label>
+								<input type="checkbox" name="TextureAO" id="TextureAO" onclick="MATERIAL.updateIsTextureAO(value)">
+								<br>
+							</fieldset>
 							<label for="Kd">Kd : </label><br>
 							<input type="color" id="Kd" name="Kd" value="#ffffff" oninput="MATERIAL.Kd = convertRGBA(value)">
 							<br>

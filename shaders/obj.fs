@@ -318,10 +318,9 @@ vec3 Microfacettes(vec3 o, vec3 n, float sigma, vec3 Kd, vec3 ao, float mode){
 // ==================================================================================================================================================================================================
 void main(void)
 {
-
+	//***********************
+	// prepare material data
 	vec3 N = v_N;
-	
-	
 	float sigma = u_sigma;
 	vec3 Kd = u_Kd;
 	vec3 ao = vec3(0.0);
