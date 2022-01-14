@@ -35,10 +35,21 @@
 						</fieldset>	
 						<fieldset>
 							<legend> Parametrage du materiau </legend>
-
-							<label for="TextureActive"> Activation des textures : </label>
-							<input type="checkbox" name="TextureActive" id="TextureActive" onclick="MATERIAL.updateIsTextured(value)">
-							<br>
+							<fieldset>
+								<legend> Textures </legend>
+								<label for="TextureColor"> Couleur : </label>
+								<input type="checkbox" name="TextureColor" id="TextureColor" onclick="MATERIAL.updateIsTextureColor(value)">
+								<br>
+								<label for="TextureRoughness"> Rugausité : </label>
+								<input type="checkbox" name="TextureRoughness" id="TextureRoughness" onclick="MATERIAL.updateIsTextureRoughness(value)">
+								<br>
+								<label for="TextureNormal"> Normale : </label>
+								<input type="checkbox" name="TextureNormal" id="TextureNormal" onclick="MATERIAL.updateIsTextureNormal(value)">
+								<br>
+								<label for="TextureAO"> Ambiante occlusion : </label>
+								<input type="checkbox" name="TextureAO" id="TextureAO" onclick="MATERIAL.updateIsTextureAO(value)">
+								<br>
+							</fieldset>
 							
 							<label for="Kd">Kd : </label><br>
 							<input type="color" id="Kd" name="Kd" value="#ffffff" oninput="MATERIAL.Kd = convertRGBA(value)">
