@@ -1,37 +1,46 @@
 precision mediump float;
 
 float PI = 3.1415926535897932384626433832795;
+vec3 CAM_POS = vec3(0.0);
 
+//********************************************
 // vecteurs decrivant le fragment/pixel actuel du triangle 
 varying vec4 v_pos3D;  //position dans le repère camera
 varying vec2 v_texCoords;  //position dans le repère camera
 varying vec3 v_N;      //normal de la surface du fragment
 
+//********************************************
 // Description du materiau
 uniform float u_Distrib;      // mode de distribution
 uniform float u_Sample; 	  // nombre d'echantillon
-uniform vec3 u_Kd;            // couleur
-uniform float u_sigma;        // roughness du materiau
 uniform float u_Ni;           // indice du milieu ~ 1.3 pour l'eau
 uniform float u_mix; 		  // type de mixage
 uniform float u_factor;   // Active/Desactive la texture 
 
-// Description de la camera
-vec3 CAM_POS = vec3(0.0); //position
+// couleur
+uniform vec3  u_Kd;            
+uniform float u_texture_color;   // Active/Desactive la texture 
+uniform sampler2D s_texture_color; 
 
+// roughness du materiau
+uniform float u_sigma;        
+uniform float u_texture_roughness;   // Active/Desactive la texture 
+uniform sampler2D s_texture_roughness;
+
+// Normale map
+uniform float u_texture_normal;   
+uniform sampler2D s_texture_normal;
+
+// Ambiante occlusion
+uniform float u_texture_ao;   // Active/Desactive la texture 
+uniform sampler2D s_texture_ao;
+
+//********************************************
 // description de la Skybox
 uniform samplerCube skybox;  // sampler de la cube map
 uniform mat4 u_RotSkybox;	     // matrice de correction de la transformation pour la cube map
 
-uniform float u_texture_color;   // Active/Desactive la texture 
-uniform sampler2D s_texture_color; 
-uniform float u_texture_roughness;   // Active/Desactive la texture 
-uniform sampler2D s_texture_roughness;
-uniform float u_texture_normal;   // Active/Desactive la texture 
-uniform sampler2D s_texture_normal;
-uniform float u_texture_ao;   // Active/Desactive la texture 
-uniform sampler2D s_texture_ao;
-
+//********************************************
 // Timelog
 uniform float u_time;        // temps actuel utilisé pour le sampling
 
@@ -216,15 +225,18 @@ vec3 BRDF(vec3 Kd, vec3 Li, float ni, float sigma, mat4 rotSkybox, float distrib
 	return Li * ((1.0-F)*diffuse_BRDF  +  specular_BRDF) * din;
 }
 
+//--------------------
+// methode effectuant l'echantillonage en fonction du mode demandé
 vec3 Microfacettes(vec3 o, vec3 n, float sigma, vec3 Kd, vec3 ao, float mode){
 
+	//******************************************
 	// create random based on time and direction
 	float rand = 0.0;
 	rand = Random(v_pos3D.x, v_pos3D.y);
 	rand = Random(rand, v_pos3D.z);
 	rand = Random(rand, u_time);	
 
-
+	//***************
 	// foreach sample
 	vec3 cumul = vec3(0.0);	
 	float factor = 0.0;
@@ -235,6 +247,7 @@ vec3 Microfacettes(vec3 o, vec3 n, float sigma, vec3 Kd, vec3 ao, float mode){
 			break;
 		}
 
+		//***************
 		// create randoms
 		float x = Random(rand, it);
 		float y = Random(rand, it*8.0);
@@ -293,16 +306,18 @@ vec3 Microfacettes(vec3 o, vec3 n, float sigma, vec3 Kd, vec3 ao, float mode){
 				if(din*don < 0.0001 || dim*dom < 0.0001 || don < 0.0001){
 					Lo = vec3(0.0);	
 				}
-				else if(u_Ni > 4.9){
+				else if(u_Ni > 4.9){ // perfect mirror
 					vec3 refl_color = ReflectColor(u_RotSkybox, i); // calcul reflection color skymap
 					Lo = refl_color;
 				}
-				else {
+				else { // do BRDF
 					vec3 refl_color = ReflectColor(u_RotSkybox, i); // calcul reflection color skymap
 					float dnm = ddot(n, m);	
 					Lo = BRDF(Kd, refl_color, u_Ni, sigma, u_RotSkybox, u_Distrib, din, dim, don, dom, dnm);
 				}
-				vec3 ambient = Kd * ao;
+
+				// add ambient
+				vec3 ambient = u_factor * Kd * ao;
 				Lo += ambient;
 			} 			
 
@@ -324,10 +339,9 @@ void main(void)
 	float sigma = u_sigma;
 	vec3 Kd = u_Kd;
 	vec3 ao = vec3(0.0);
-	// Activation des textures 
 	
 	vec3 o = normalize(CAM_POS - vec3(v_pos3D));   // fragment -> camera
-	vec3 res = vec3(1.0,0.0, 1.0);
+	vec3 Lo = vec3(1.0,0.0, 1.0);
 
 
 	float v_mix = u_mix;
@@ -335,10 +349,10 @@ void main(void)
 	if(v_mix < 10.0){ // if is not a microfacette render
 		if(v_mix == 0.0 ){ // mirroir parfait
 			vec3 i = reflect(-o, N); //vecteur reflechi
-			res = ReflectColor(u_RotSkybox, i);
+			Lo = ReflectColor(u_RotSkybox, i);
 		}
 		else if(v_mix == 1.0 ){ //transparence parfait
-			res = RefractColor(u_RotSkybox, o, N, 1.0, u_Ni);
+			Lo = RefractColor(u_RotSkybox, o, N, 1.0, u_Ni);
 		}
 		else if(v_mix == 2.0 ){ //transparence + mirroir fresnel
 			vec3 i = reflect(-o, N); //vecteur reflechi
@@ -353,14 +367,14 @@ void main(void)
 
 			vec3 Fr2 = vec3((1.0-F)*(refra_color)); //transmitted
 			vec3 Fr3 = vec3(F*refl_color);          //reflected 
-			res = Fr2 + Fr3;
+			Lo = Fr2 + Fr3;
 		}
 		else if(v_mix == 3.0 ){ //mirroir coloré par texture
 			vec3 i = reflect(-o, N); //vecteur reflechi
 			vec3 Kd = vec3(texture2D(s_texture_color, v_texCoords));
 
-			res = ReflectColor(u_RotSkybox, i);
-			res = (res + Kd) /2.0;
+			Lo = ReflectColor(u_RotSkybox, i);
+			Lo = (Lo + Kd) /2.0;
 		}
 		else if(v_mix == 4.0){ //mirroir parfait avec bump
 			vec3 n = vec3(texture2D(s_texture_normal, v_texCoords));
@@ -371,9 +385,10 @@ void main(void)
 			);
 
 			vec3 i = reflect(-o, n); //vecteur reflechi
-			res = ReflectColor(u_RotSkybox, i);
+			Lo = ReflectColor(u_RotSkybox, i);
 		}
 		else if(v_mix == 5.0){
+			//*************************
 			// Activation des textures 
 			if ( u_texture_color == 1.0){
 				Kd = vec3(texture2D(s_texture_color, v_texCoords));
@@ -393,9 +408,12 @@ void main(void)
 				ao = vec3(texture2D(s_texture_ao, v_texCoords));
 			}
 
+			//*************************	
+			// Calcul BRDF
+
 			// precalculs
 			vec3 m = N;
-			vec3 i = reflect(-o, m); //vecteur reflechi
+			vec3 i = reflect(-o, m);
 
 			// calcul  des dot products
 			float din = ddot(i, N);
@@ -405,26 +423,27 @@ void main(void)
 			float dnm = ddot(N, m);
 			vec3 refl_color = ReflectColor(u_RotSkybox, i);
 
-			res = BRDF(Kd, refl_color, u_Ni, sigma, u_RotSkybox, u_Distrib, din, dim, don, dom, dnm);
+			Lo = BRDF(Kd, refl_color, u_Ni, sigma, u_RotSkybox, u_Distrib, din, dim, don, dom, dnm);
 
-			vec3 ambient = Kd * ao;
-			res += ambient;
+			vec3 ambient = u_factor * Kd * ao;
+			Lo += ambient;
 		}
 	}
 	else {
 		if(v_mix == 10.0 ){ // mirroir parfait depoli (sampling)
-			res = Microfacettes(o, N, sigma, Kd, ao, 0.0);
+			Lo = Microfacettes(o, N, sigma, Kd, ao, 0.0);
 		}
 		else if(v_mix == 11.0 ){ // transparence parfaite depolie (sampling)
-			res = Microfacettes(o, N, sigma, Kd, ao, 1.0);
+			Lo = Microfacettes(o, N, sigma, Kd, ao, 1.0);
 		}
 		else if(v_mix == 12.0 ){ // transparence + mirroir fresnel depoli (sampling)
-			res = Microfacettes(o, N, sigma, Kd, ao, 2.0);
+			Lo = Microfacettes(o, N, sigma, Kd, ao, 2.0);
 		}
 		else if(v_mix == 13.0 ){ // mirroir + normal depoli
-			res = Microfacettes(o, N, sigma, Kd, ao, 3.0);
+			Lo = Microfacettes(o, N, sigma, Kd, ao, 3.0);
 		}
 		else if ( v_mix == 14.0){ //BRDF (sampling)
+			//*************************
 			// Activation des textures 
 			if ( u_texture_color == 1.0){
 				Kd = vec3(texture2D(s_texture_color, v_texCoords));
@@ -443,12 +462,13 @@ void main(void)
 			if ( u_texture_ao == 1.0){
 				ao = vec3(texture2D(s_texture_ao, v_texCoords));
 			}
-
-			res = Microfacettes(o, N, sigma, Kd, ao, 4.0);
+			//*************************
+			// Calcul BRDF 
+			Lo = Microfacettes(o, N, sigma, Kd, ao, 4.0);
 		} 
 	}
 
-	gl_FragColor = vec4(res, 1.0);
+	gl_FragColor = vec4(Lo, 1.0);
 }
 
 
