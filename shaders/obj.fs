@@ -374,7 +374,7 @@ void main(void)
 			vec3 Kd = vec3(texture2D(s_texture_color, v_texCoords));
 
 			Lo = ReflectColor(u_RotSkybox, i);
-			Lo = (Lo + Kd) /2.0;
+			Lo = (Lo * Kd) /2.0;
 		}
 		else if(v_mix == 4.0){ //mirroir parfait avec bump
 			vec3 n = vec3(texture2D(s_texture_normal, v_texCoords));
