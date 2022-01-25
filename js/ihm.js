@@ -42,16 +42,13 @@ function updateUI(mode){
     }
 
     var divTextures = document.getElementById('divTextures'); 
-    var divKd = document.getElementById('divKd'); 
     var divSigma = document.getElementById('divSigma'); 
     var divNi = document.getElementById('divNi'); 
 
     if (textureMode){
         divTextures.style.display = "block"
-        divKd.style.display = "block"
     }else{
         divTextures.style.display = "none"
-        divKd.style.display = "none"
     }
 
     if (paramsMode[0]){
