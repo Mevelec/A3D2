@@ -27,22 +27,26 @@
 					<form class="px-3">
 						<fieldset id="fieldsetVisible">
 							<legend> Paramétrage du matériau </legend>
+							<div class="d-flex row">
+								<label class="col-6" for="mix"> Type de matériel : </label>
+									<div class="col-6">								
+										<select class="form-select" name="mix" id="mix" onchange="updateUI(value)">
+										<option value="0"  selected="selected" onclick="MATERIAL.mix = value;"> Mirroir parfait </option>
+										<option value="1"  onclick="MATERIAL.mix = value;"> Transparence seule </option>
+										<option value="2"  onclick="MATERIAL.mix = value;"> Transparence et mirroir Fresnel </option>
+										<option value="3"  onclick="MATERIAL.mix = value;"> Mirroir coloré par texture </option>
+										<option value="4"  onclick="MATERIAL.mix = value;"> Mirroir parfait avec bump </option>
+										<option value="5"  onclick="MATERIAL.mix = value;"> Matériau complexe </option>
+										
+										<option value="10" onclick="MATERIAL.mix = value;"> Mirroir parfait dépoli (échantillonage) </option>
+										<option value="11" onclick="MATERIAL.mix = value;"> Transparence parfaite dépolie (échantillonage) </option>
+										<option value="12" onclick="MATERIAL.mix = value;"> Transparence et mirroir de Fresnel dépoli (échantillonage) </option>
+										<option value="13" onclick="MATERIAL.mix = value;"> Mirroir et normales dépoli (échantillonage) </option>
+										<option value="14" onclick="MATERIAL.mix = value;"> Matériau complexe  (échantillonage)</option>
+									</select>
+								</div>
 
-							<label for="mix"> Type de matériel : </label>
-							<select name="mix" id="mix" class="form-select" onchange="updateUI(value)">
-								<option value="0"  selected="selected" onclick="MATERIAL.mix = value;"> Mirroir parfait </option>
-								<option value="1"  onclick="MATERIAL.mix = value;"> Transparence seule </option>
-								<option value="2"  onclick="MATERIAL.mix = value;"> Transparence et mirroir Fresnel </option>
-								<option value="3"  onclick="MATERIAL.mix = value;"> Mirroir coloré par texture </option>
-								<option value="4"  onclick="MATERIAL.mix = value;"> Mirroir parfait avec bump </option>
-								<option value="5"  onclick="MATERIAL.mix = value;"> Matériau complexe </option>
-								
-								<option value="10" onclick="MATERIAL.mix = value;"> Mirroir parfait dépoli (échantillonage) </option>
-								<option value="11" onclick="MATERIAL.mix = value;"> Transparence parfaite dépolie (échantillonage) </option>
-								<option value="12" onclick="MATERIAL.mix = value;"> Transparence et mirroir de Fresnel dépoli (échantillonage) </option>
-								<option value="13" onclick="MATERIAL.mix = value;"> Mirroir et normales dépoli (échantillonage) </option>
-								<option value="14" onclick="MATERIAL.mix = value;"> Matériau complexe  (échantillonage)</option>
-							</select>
+							</div>
 						</fieldset>
 
 						<fieldset id="divTextures" >
