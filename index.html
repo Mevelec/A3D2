@@ -62,15 +62,27 @@
 								<input type="checkbox" class="form-check-input" name="TextureAO" id="TextureAO" onclick="MATERIAL.updateIsTextureAO(value)">
 								<label for="TextureAO"> Ambiante occlusion</label>
 								<br>
-						</fieldset>
 
-						<fieldset>
-							<div id="divKd" >
 								<div class="d-flex d-row">
 									<label for="Kd">Kd : </label><br>
 									<input type="color" id="Kd" name="Kd" value="#888888" oninput="MATERIAL.Kd = convertRGBA(value)">	
 								</div>
-							</div>
+								<br>
+
+								<div class="d-flex d-row">
+									<label class="col-6" for="sample">Facteur d'occlusion ambiante :  </label>
+									<div class="col-6">
+										<input class="form-control col-6" type="number" step="0.1"  id="sample" min="0" value="1" oninput="MATERIAL.factor = value;">	
+									</div>
+								</div>
+
+
+								
+
+						</fieldset>
+
+						<fieldset>
+							
 
 							<div id="divSigma">
 								<label for="Sigma">Sigma/Roughness : </label><br>
@@ -112,13 +124,6 @@
 									<input class="form-control" type="number" step="1"  id="sample" min="0" value="3" oninput="MATERIAL.sample = value;">	
 								</div>
 															
-							</div>
-							
-							<div class="d-flex d-row">
-								<label class="col-6" for="sample">Facteur d'occlusion ambiante :  </label>
-								<div class="col-6">
-									<input class="form-control col-6" type="number" step="0.1"  id="sample" min="0" value="1" oninput="MATERIAL.factor = value;">	
-								</div>
 							</div>
 
 						</fieldset>
