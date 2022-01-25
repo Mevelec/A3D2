@@ -47,20 +47,27 @@
 
 						<fieldset id="divTextures" >
 							<legend> Textures </legend>
-								<input type="checkbox" class="form-check-input" name="TextureColor" id="TextureColor" onclick="MATERIAL.updateIsTextureColor(value)">
-								<label for="TextureColor"> Couleur</label>
-								<br>
+								<div class="d-flex row">
+									<div class="col-6">
+										<input type="checkbox" class="form-check-input" name="TextureColor" id="TextureColor" onclick="MATERIAL.updateIsTextureColor(value)">
+										<label for="TextureColor"> Couleur</label>
+									</div>
 
-								<input type="checkbox" class="form-check-input" name="TextureRoughness" id="TextureRoughness" onclick="MATERIAL.updateIsTextureRoughness(value)">
-								<label for="TextureRoughness"> Rugausité </label>
-								<br>
+									<div class="col-6">
+										<input type="checkbox" class="form-check-input" name="TextureRoughness" id="TextureRoughness" onclick="MATERIAL.updateIsTextureRoughness(value)">
+										<label for="TextureRoughness"> Rugausité </label>
+									</div>
 
-								<input type="checkbox" class="form-check-input" name="TextureNormal" id="TextureNormal" onclick="MATERIAL.updateIsTextureNormal(value)">
-								<label for="TextureNormal"> Normale </label>
-								<br>
+									<div class="col-6">
+										<input type="checkbox" class="form-check-input" name="TextureNormal" id="TextureNormal" onclick="MATERIAL.updateIsTextureNormal(value)">
+										<label for="TextureNormal"> Normale </label>
+									</div>
 
-								<input type="checkbox" class="form-check-input" name="TextureAO" id="TextureAO" onclick="MATERIAL.updateIsTextureAO(value)">
-								<label for="TextureAO"> Ambiante occlusion</label>
+									<div class="col-6">
+										<input type="checkbox" class="form-check-input" name="TextureAO" id="TextureAO" onclick="MATERIAL.updateIsTextureAO(value)">
+										<label for="TextureAO"> Ambiante occlusion</label>
+									</div>
+								</div>
 								<br>
 						</fieldset>
 
@@ -68,7 +75,7 @@
 							<div id="divKd" >
 								<div class="d-flex d-row">
 									<label for="Kd">Kd : </label><br>
-									<input type="color" id="Kd" name="Kd" value="#888888" oninput="MATERIAL.Kd = convertRGBA(value)">	
+									<input class="mx-5" type="color" id="Kd" name="Kd" value="#888888" oninput="MATERIAL.Kd = convertRGBA(value)">	
 								</div>
 							</div>
 
