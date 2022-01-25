@@ -13,3 +13,7 @@ fieldset{
 #fieldsetVisible{
     display:block
 }
+
+legend{
+    text-decoration: underline;
+}
