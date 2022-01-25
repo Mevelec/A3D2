@@ -21,14 +21,14 @@ var TIME = 0;
 // =====================================================
 class Material{
 	constructor(){
-		this.Kd = [1, 1, 1];
+		this.Kd = [0.53, 0.53, 0.53];
 		this.sigma = 0.2;
 		this.Ni = 1.3;
 		this.transmission = 0;
 		this.distrib = 0;
 		this.sample = 10;
 		this.mix = 0;
-		this.factor = 0.0;
+		this.factor = 1.0;
 		
 		this.textureColor = 0.0; 
 		this.textureRoughness = 0.0; 
