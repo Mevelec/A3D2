@@ -213,7 +213,7 @@ vec3 ReflectColor(mat4 RotSkybox, vec3 i){
 // ==================================================================================================================================================================================================
 //                    Cutted shaders
 // ==================================================================================================================================================================================================
-vec3 BRDF(vec3 Kd, vec3 Li, float ni, float sigma, mat4 rotSkybox, float distrib, float din, float dim, float don, float dom, float dnm){
+vec3 CookTorance(vec3 Kd, vec3 Li, float ni, float sigma, mat4 rotSkybox, float distrib, float din, float dim, float don, float dom, float dnm){
 	// calcul des méthodes
 	float F = Fresnel(ni, dim);
 	float D = Distribution(distrib, dnm, sigma);
@@ -227,7 +227,7 @@ vec3 BRDF(vec3 Kd, vec3 Li, float ni, float sigma, mat4 rotSkybox, float distrib
 
 //--------------------
 // methode effectuant l'echantillonage en fonction du mode demandé
-vec3 Microfacettes(vec3 o, vec3 n, float sigma, vec3 Kd, vec3 ao, float mode){
+vec3 Echantillonage(vec3 o, vec3 n, float sigma, vec3 Kd, vec3 ao, float mode){
 
 	//******************************************
 	// create random based on time and direction
@@ -313,7 +313,7 @@ vec3 Microfacettes(vec3 o, vec3 n, float sigma, vec3 Kd, vec3 ao, float mode){
 				else { // do BRDF
 					vec3 refl_color = ReflectColor(u_RotSkybox, i); // calcul reflection color skymap
 					float dnm = ddot(n, m);	
-					Lo = BRDF(Kd, refl_color, u_Ni, sigma, u_RotSkybox, u_Distrib, din, dim, don, dom, dnm);
+					Lo = CookTorance(Kd, refl_color, u_Ni, sigma, u_RotSkybox, u_Distrib, din, dim, don, dom, dnm);
 				}
 
 				// add ambient
@@ -423,7 +423,7 @@ void main(void)
 			float dnm = ddot(N, m);
 			vec3 refl_color = ReflectColor(u_RotSkybox, i);
 
-			Lo = BRDF(Kd, refl_color, u_Ni, sigma, u_RotSkybox, u_Distrib, din, dim, don, dom, dnm);
+			Lo = CookTorance(Kd, refl_color, u_Ni, sigma, u_RotSkybox, u_Distrib, din, dim, don, dom, dnm);
 
 			vec3 ambient = u_factor * Kd * ao;
 			Lo += ambient;
@@ -431,16 +431,16 @@ void main(void)
 	}
 	else {
 		if(v_mix == 10.0 ){ // mirroir parfait depoli (sampling)
-			Lo = Microfacettes(o, N, sigma, Kd, ao, 0.0);
+			Lo = Echantillonage(o, N, sigma, Kd, ao, 0.0);
 		}
 		else if(v_mix == 11.0 ){ // transparence parfaite depolie (sampling)
-			Lo = Microfacettes(o, N, sigma, Kd, ao, 1.0);
+			Lo = Echantillonage(o, N, sigma, Kd, ao, 1.0);
 		}
 		else if(v_mix == 12.0 ){ // transparence + mirroir fresnel depoli (sampling)
-			Lo = Microfacettes(o, N, sigma, Kd, ao, 2.0);
+			Lo = Echantillonage(o, N, sigma, Kd, ao, 2.0);
 		}
 		else if(v_mix == 13.0 ){ // mirroir + normal depoli
-			Lo = Microfacettes(o, N, sigma, Kd, ao, 3.0);
+			Lo = Echantillonage(o, N, sigma, Kd, ao, 3.0);
 		}
 		else if ( v_mix == 14.0){ //BRDF (sampling)
 			//*************************
@@ -464,7 +464,7 @@ void main(void)
 			}
 			//*************************
 			// Calcul BRDF 
-			Lo = Microfacettes(o, N, sigma, Kd, ao, 4.0);
+			Lo = Echantillonage(o, N, sigma, Kd, ao, 4.0);
 		} 
 	}
 
