@@ -28,7 +28,7 @@
 						<fieldset id="fieldsetVisible">
 							<legend> Paramétrage du matériau </legend>
 
-							<label for="mix"> Type de materiel : </label>
+							<label for="mix"> Type de matériel : </label>
 							<select name="mix" id="mix" onchange="updateUI(value)">
 								<option value="0"  selected="selected" onclick="MATERIAL.mix = value;"> Mirroir parfait </option>
 								<option value="1"  onclick="MATERIAL.mix = value;"> Transparence seule </option>
@@ -52,11 +52,11 @@
 								<br>
 
 								<input type="checkbox" class="form-check-input" name="TextureRoughness" id="TextureRoughness" onclick="MATERIAL.updateIsTextureRoughness(value)">
-								<label for="TextureRoughness"> Rugausité</label>
+								<label for="TextureRoughness"> Rugausité </label>
 								<br>
 
 								<input type="checkbox" class="form-check-input" name="TextureNormal" id="TextureNormal" onclick="MATERIAL.updateIsTextureNormal(value)">
-								<label for="TextureNormal"> Normale</label>
+								<label for="TextureNormal"> Normale </label>
 								<br>
 
 								<input type="checkbox" class="form-check-input" name="TextureAO" id="TextureAO" onclick="MATERIAL.updateIsTextureAO(value)">
@@ -99,7 +99,7 @@
 
 						<fieldset >
 							
-							<legend> Parametres de rendu  </legend>
+							<legend> Paramètres de rendu  </legend>
 							<div class="d-flex d-row">
 								<label class="col-6" for="mode"> Mode : </label>
 								<div class="col-6">
@@ -112,7 +112,7 @@
 							
 
 							<div class="d-flex d-row">
-								<label class="col-6" for="sample">Nombre d'echantillon :  </label><br>
+								<label class="col-6" for="sample">Nombre d'échantillon :  </label><br>
 								<div class="col-6">
 									<input class="form-control" type="number" step="1"  id="sample" min="0" value="3" oninput="MATERIAL.sample = value;">	
 								</div>
@@ -130,16 +130,16 @@
 
 
 						<fieldset > 
-							<legend> Parametrage de la scene   </legend>
+							<legend> Paramètrage de la scene  </legend>
 							<div class="d-flex d-row">
 								<label class="col-6" for="skymap">Choix de la skymap : </label>
 								<div class="col-6">
 									<select class="form-select" name="skymap" id="skymap">
-										<option value="Yokohama"  onclick="CUBEMAP.cubemapName = value; CUBEMAP.initAll()"> Yokohama </option>
-										<option value="Areskutan" onclick="CUBEMAP.cubemapName = value ; CUBEMAP.initAll() "> Areskutan </option>
-										<option value="FortPoint" onclick="CUBEMAP.cubemapName = value ; CUBEMAP.initAll()" > FortPoint </option>
-										<option value="Lycksele" selected=true onclick="CUBEMAP.cubemapName = value ; CUBEMAP.initAll()"  > Lycksele </option>
-										<option value="Tantolunden" onclick="CUBEMAP.cubemapName = value ; CUBEMAP.initAll()"> Tantolunden </option>
+										<option value="Yokohama"  	onclick="CUBEMAP.cubemapName = value; 	CUBEMAP.initAll()"> Yokohama </option>
+										<option value="Areskutan" 	onclick="CUBEMAP.cubemapName = value ; 	CUBEMAP.initAll() "> Areskutan </option>
+										<option value="FortPoint" 	onclick="CUBEMAP.cubemapName = value ; 	CUBEMAP.initAll()" > FortPoint </option>
+										<option value="Lycksele"  	onclick="CUBEMAP.cubemapName = value ; 	CUBEMAP.initAll()" selected=true  > Lycksele </option>
+										<option value="Tantolunden" onclick="CUBEMAP.cubemapName = value ; 	CUBEMAP.initAll()"> Tantolunden </option>
 									</select>
 								</div>
 							</div>
@@ -149,11 +149,11 @@
 								<label class="col-6" for="obj3D"> Objet dans la scene : </label>
 								<div class="col-6">
 									<select class="form-select" name="obj3D" id="obj3D">
-										<option value="sphere_2" onclick="changeObj(value)"> sphere </option>
-										<option value="cube" onclick="changeObj(value)"> cube </option>
-										<option value="mustang" onclick="changeObj(value)"> mustang </option>
-										<option value="porsche" onclick="changeObj(value)"> porsche</option>
-										<option value="bunny" onclick="changeObj(value)"> bunny </option>
+										<option value="sphere_2" 	onclick="changeObj(value)"> Sphère </option>
+										<option value="cube" 		onclick="changeObj(value)"> Cube </option>
+										<option value="mustang" 	onclick="changeObj(value)"> Mustang </option>
+										<option value="porsche" 	onclick="changeObj(value)"> Porsche</option>
+										<option value="bunny" 		onclick="changeObj(value)"> Bunny </option>
 									</select>
 								</div>
 							</div>
