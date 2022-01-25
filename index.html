@@ -75,13 +75,8 @@
 							<div id="divSigma">
 								<label for="Sigma">Sigma/Roughness : </label><br>
 								<div class="d-flex d-row justify-content-around">
-									
-										<input class="col-4" type="range" step="0.01" id="sigma" name="sigma" min="0" max="1" value="0.2" oninput="MATERIAL.sigma = Number(value); this.nextElementSibling.value = this.value">
-									
-									
-										<input class="col-4" class="form-control" type="number" step="0.01" min="0" max="1" value="0.2" oninput="MATERIAL.sigma = Number(value); this.previousElementSibling.value = this.value"/>
-									
-									
+									<input class="col-4" type="range" step="0.01" id="sigma" name="sigma" min="0" max="1" value="0.2" oninput="MATERIAL.sigma = Number(value); this.nextElementSibling.value = this.value">
+									<input class="col-4" class="form-control" type="number" step="0.01" min="0" max="1" value="0.2" oninput="MATERIAL.sigma = Number(value); this.previousElementSibling.value = this.value"/>
 								</div>
 								<br>
 							</div>
