@@ -28,7 +28,7 @@ class Material{
 		this.distrib = 0;
 		this.sample = 10;
 		this.mix = 0;
-		this.factor = 1.0;
+		this.factor = 0.0;
 		
 		this.textureColor = 0.0; 
 		this.textureRoughness = 0.0; 
