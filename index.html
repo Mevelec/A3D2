@@ -18,32 +18,34 @@
 	<body onload="webGLStart();updateUI(0);">
 		<table>
 			<tr>
-				<td>
+				<td class="align-top">
 					<!-- ZONE DE DESSIN-->
 					<canvas id="WebGL-test" style="border:none;" width="800" height="600"></canvas>
 				</td>
 				<td>
 					<!-- ZONE DE PARAMETRAGE -->
-					<form class="p-3">
+					<form class="px-3">
 						<fieldset id="fieldsetVisible">
 							<legend> Paramétrage du matériau </legend>
-
-							<label for="mix"> Type de matériel : </label>
-							<select name="mix" id="mix" onchange="updateUI(value)">
-								<option value="0"  selected="selected" onclick="MATERIAL.mix = value;"> Mirroir parfait </option>
-								<option value="1"  onclick="MATERIAL.mix = value;"> Transparence seule </option>
-								<option value="2"  onclick="MATERIAL.mix = value;"> Transparence et mirroir Fresnel </option>
-								<option value="3"  onclick="MATERIAL.mix = value;"> Mirroir coloré par texture </option>
-								<option value="4"  onclick="MATERIAL.mix = value;"> Mirroir parfait avec bump </option>
-								<option value="5"  onclick="MATERIAL.mix = value;"> Matériau complexe </option>
-								
-								<option value="10" onclick="MATERIAL.mix = value;"> Mirroir parfait dépoli (échantillonage) </option>
-								<option value="11" onclick="MATERIAL.mix = value;"> Transparence parfaite dépolie (échantillonage) </option>
-								<option value="12" onclick="MATERIAL.mix = value;"> Transparence et mirroir de Fresnel dépoli (échantillonage) </option>
-								<option value="13" onclick="MATERIAL.mix = value;"> Mirroir et normales dépoli (échantillonage) </option>
-								<option value="14" onclick="MATERIAL.mix = value;"> Matériau complexe  (échantillonage)</option>
-							</select>
-							
+							<div class="d-flex row">
+								<label class="col-6" for="mix"> Type de matériel : </label>
+									<div class="col-6">								
+										<select class="form-select" name="mix" id="mix" onchange="updateUI(value)">
+										<option value="0"  selected="selected" onclick="MATERIAL.mix = value;"> Mirroir parfait </option>
+										<option value="1"  onclick="MATERIAL.mix = value;"> Transparence seule </option>
+										<option value="2"  onclick="MATERIAL.mix = value;"> Transparence et mirroir Fresnel </option>
+										<option value="3"  onclick="MATERIAL.mix = value;"> Mirroir coloré par texture </option>
+										<option value="4"  onclick="MATERIAL.mix = value;"> Mirroir parfait avec bump </option>
+										<option value="5"  onclick="MATERIAL.mix = value;"> Matériau complexe </option>
+										
+										<option value="10" onclick="MATERIAL.mix = value;"> Mirroir parfait dépoli (échantillonage) </option>
+										<option value="11" onclick="MATERIAL.mix = value;"> Transparence parfaite dépolie (échantillonage) </option>
+										<option value="12" onclick="MATERIAL.mix = value;"> Transparence et mirroir de Fresnel dépoli (échantillonage) </option>
+										<option value="13" onclick="MATERIAL.mix = value;"> Mirroir et normales dépoli (échantillonage) </option>
+										<option value="14" onclick="MATERIAL.mix = value;"> Matériau complexe  (échantillonage)</option>
+									</select>
+								</div>
+							</div>
 						</fieldset>
 
 						<fieldset id="divTextures" >
@@ -94,17 +96,17 @@
 
 							<div id="divSigma">
 								<label for="Sigma">Sigma/Roughness : </label><br>
-								<div class="d-flex d-row justify-content-around">
-									<input class="col-4" type="range" step="0.01" id="sigma" name="sigma" min="0" max="1" value="0.2" oninput="MATERIAL.sigma = Number(value); this.nextElementSibling.value = this.value">
-									<input class="col-4" class="form-control" type="number" step="0.01" min="0" max="1" value="0.2" oninput="MATERIAL.sigma = Number(value); this.previousElementSibling.value = this.value"/>
+								<div class="d-flex d-row justify-content-between">
+									<input class="col-6" type="range" step="0.01" id="sigma" name="sigma" min="0" max="1" value="0.2" oninput="MATERIAL.sigma = Number(value); this.nextElementSibling.value = this.value">
+									<input class="form-control" type="number" step="0.01" min="0" max="1" value="0.2" oninput="MATERIAL.sigma = Number(value); this.previousElementSibling.value = this.value"/>
 								</div>
 							</div>
 
 							<div id="divNi">
 								<label for="Ni">indice du milieu (Ni)</label> <br>
-								<div class="d-flex d-row justify-content-around">
-									<input class="col-4" type="range" step="0.01" id="Ni" name="Ni" min="1" max="5" value="1.3" oninput="MATERIAL.Ni = Number(value); this.nextElementSibling.value = this.value">
-									<input class="col-4" class="form-control" type="number" step="0.01" min="1" max="5" value="1.3" oninput="MATERIAL.Ni = Number(value); this.previousElementSibling.value = this.value"/>
+								<div class="d-flex d-row justify-content-between">
+									<input class="col-6" type="range" step="0.01" id="Ni" name="Ni" min="1" max="5" value="1.3" oninput="MATERIAL.Ni = Number(value); this.nextElementSibling.value = this.value">
+									<input class="form-control" type="number" step="0.01" min="1" max="5" value="1.3" oninput="MATERIAL.Ni = Number(value); this.previousElementSibling.value = this.value"/>
 								</div>
 							</div>
 
