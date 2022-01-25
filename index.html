@@ -1,4 +1,4 @@
-<html>
+<!DOCTYPE html>
 	<head >
 		<title>WebGL - Canvas test</title>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
@@ -15,7 +15,7 @@
 
 	</head>
 
-	<body onload="webGLStart(), updateUI(0)">
+	<body onload="webGLStart();updateUI(0);">
 		<table>
 			<tr>
 				<td>
@@ -24,59 +24,63 @@
 				</td>
 				<td>
 					<!-- ZONE DE PARAMETRAGE -->
-					<form>
+					<form class="p-3">
 						<fieldset id="fieldsetVisible">
 							<legend> Paramétrage du matériau </legend>
 
 							<label for="mix"> Type de materiel : </label>
 							<select name="mix" id="mix" onchange="updateUI(value)">
-								<option value="0"  selected=selected onclick="MATERIAL.mix = value;"> Mirroir parfait </option>
-								<option value="1"  onclick="MATERIAL.mix = value;"> Transparence parfaite </option>
+								<option value="0"  selected="selected" onclick="MATERIAL.mix = value;"> Mirroir parfait </option>
+								<option value="1"  onclick="MATERIAL.mix = value;"> Transparence seule </option>
 								<option value="2"  onclick="MATERIAL.mix = value;"> Transparence et mirroir Fresnel </option>
 								<option value="3"  onclick="MATERIAL.mix = value;"> Mirroir coloré par texture </option>
 								<option value="4"  onclick="MATERIAL.mix = value;"> Mirroir parfait avec bump </option>
-								<option value="5"  onclick="MATERIAL.mix = value;"> BRDF simple </option>
+								<option value="5"  onclick="MATERIAL.mix = value;"> Matériau complexe </option>
 								
-								<option value="10" onclick="MATERIAL.mix = value;"> Mirroir parfait dépoli (échantillonnage) </option>
-								<option value="11" onclick="MATERIAL.mix = value;"> Transparence parfaite dépolie (échantillonnage) </option>
-								<option value="12" onclick="MATERIAL.mix = value;"> Transparence et mirroir de Fresnel dépoli (échantillonnage) </option>
-								<option value="13" onclick="MATERIAL.mix = value;"> Mirroir et normales dépoli (échantillonnage)</option>
-								<option value="14" onclick="MATERIAL.mix = value;"> BRDF (échantillonnage)</option>
+								<option value="10" onclick="MATERIAL.mix = value;"> Mirroir parfait dépoli (échantillonage) </option>
+								<option value="11" onclick="MATERIAL.mix = value;"> Transparence parfaite dépolie (échantillonage) </option>
+								<option value="12" onclick="MATERIAL.mix = value;"> Transparence et mirroir de Fresnel dépoli (échantillonage) </option>
+								<option value="13" onclick="MATERIAL.mix = value;"> Mirroir et normales dépoli (échantillonage) </option>
+								<option value="14" onclick="MATERIAL.mix = value;"> BRDF (échantillonage)</option>
 							</select>
 						</fieldset>
 
 						<fieldset id="divTextures" >
 							<legend> Textures </legend>
-							
-							<label for="TextureColor"> Couleur : </label>
-							<input type="checkbox" name="TextureColor" id="TextureColor" onclick="MATERIAL.updateIsTextureColor(value)"><br>
-							
-							<label for="TextureRoughness"> Rugausité : </label>
-							<input type="checkbox" name="TextureRoughness" id="TextureRoughness" onclick="MATERIAL.updateIsTextureRoughness(value)"><br>
-							
-							<label for="TextureNormal"> Normale : </label>
-							<input type="checkbox" name="TextureNormal" id="TextureNormal" onclick="MATERIAL.updateIsTextureNormal(value)"><br>
-							
-							<label for="TextureAO"> Occlusion ambiante : </label>
-							<input type="checkbox" name="TextureAO" id="TextureAO" onclick="MATERIAL.updateIsTextureAO(value)"><br>
+								<input type="checkbox" class="form-check-input" name="TextureColor" id="TextureColor" onclick="MATERIAL.updateIsTextureColor(value)">
+								<label for="TextureColor"> Couleur</label>
+								<br>
 
+								<input type="checkbox" class="form-check-input" name="TextureRoughness" id="TextureRoughness" onclick="MATERIAL.updateIsTextureRoughness(value)">
+								<label for="TextureRoughness"> Rugausité</label>
+								<br>
+
+								<input type="checkbox" class="form-check-input" name="TextureNormal" id="TextureNormal" onclick="MATERIAL.updateIsTextureNormal(value)">
+								<label for="TextureNormal"> Normale</label>
+								<br>
+
+								<input type="checkbox" class="form-check-input" name="TextureAO" id="TextureAO" onclick="MATERIAL.updateIsTextureAO(value)">
+								<label for="TextureAO"> Ambiante occlusion</label>
+								<br>
 						</fieldset>
 
 						<fieldset>
 
-							<label for="Kd">Kd : </label>
-							<input type="color" id="Kd" name="Kd" value="#888888" oninput="MATERIAL.Kd = convertRGBA(value)"><br>
+							<div class="d-flex d-row">
+								<label for="Kd">Kd : </label><br>
+								<input type="color" id="Kd" name="Kd" value="#888888" oninput="MATERIAL.Kd = convertRGBA(value)">	
+							</div>
 
 							<div id="divSigma">
 								<label for="Sigma">Sigma/Roughness : </label><br>
 								<input type="range" step="0.01" id="sigma" name="sigma" min="0" max="1" value="0.2" oninput="MATERIAL.sigma = Number(value); this.nextElementSibling.value = this.value">
-								<input type="number" step="0.01" min="0" max="1" value="0.2" oninput="MATERIAL.sigma = Number(value); this.previousElementSibling.value = this.value"/><br>
+								<input class="form-control" type="number" step="0.01" min="0" max="1" value="0.2" oninput="MATERIAL.sigma = Number(value); this.previousElementSibling.value = this.value"/><br>
 							</div>
 
 							<div id="divNi">
-								<label for="Ni">Indice du milieu (Ni)</label> <br>
+								<label for="Ni">indice du milieu (Ni)</label> <br>
 								<input type="range" step="0.01" id="Ni" name="Ni" min="1" max="5" value="1.3" oninput="MATERIAL.Ni = Number(value); this.nextElementSibling.value = this.value">
-								<input type="number" step="0.01" min="1" max="5" value="1.3" oninput="MATERIAL.Ni = Number(value); this.previousElementSibling.value = this.value"/><br>	
+								<input class="form-control" type="number" step="0.01" min="1" max="5" value="1.3" oninput="MATERIAL.Ni = Number(value); this.previousElementSibling.value = this.value"/><br>	
 							</div>
 
 						</fieldset>
@@ -84,42 +88,65 @@
 
 						<fieldset >
 							
-							<legend> Paramètres de rendu  </legend>
-							<label for="mode"> Mode : </label>
-							<select name="mode" id="mode">
-								<option value=0 selected=true onclick="MATERIAL.uDistrib = value;"> Ggx </option>
-								<option value=1 onclick="MATERIAL.uDistrib = value;"> Beckman </option>
-							</select><br>
+							<legend> Parametres de rendu  </legend>
+							<div class="d-flex d-row">
+								<label class="col-6" for="mode"> Mode : </label>
+								<div class="col-6">
+									<select class="form-select" name="mode" id="mode">
+										<option value=0 selected=true onclick="MATERIAL.uDistrib = value;"> Ggx </option>
+										<option value=1 onclick="MATERIAL.uDistrib = value;"> Beckman </option>
+									</select>
+								</div>
+							</div>
 							
-							<label for="sample">Nombre d'échantillon :  </label>
-							<input type="number" step="1"  id="sample" min="0" value="3" oninput="MATERIAL.sample = value;"><br>
 
-							<label for="sample">Facteur d'occlusion ambiante :  </label>
-							<input type="number" step="0.1"  id="sample" min="0" value="1" oninput="MATERIAL.factor = value;"><br>
+							<div class="d-flex d-row">
+								<label class="col-6" for="sample">Nombre d'echantillon :  </label><br>
+								<div class="col-6">
+									<input class="form-control" type="number" step="1"  id="sample" min="0" value="3" oninput="MATERIAL.sample = value;">	
+								</div>
+															
+							</div>
+							
+							<div class="d-flex d-row">
+								<label class="col-6" for="sample">Facteur d'occlusion ambiante :  </label>
+								<div class="col-6">
+									<input class="form-control col-6" type="number" step="0.1"  id="sample" min="0" value="0" oninput="MATERIAL.factor = value;">	
+								</div>
+							</div>
 
 						</fieldset>
 
 
 						<fieldset > 
-							<legend> Paramétrage de la scene   </legend>
-							<label for="skymap">Choix de la skymap : </label>
-							<select name="skymap" id="skymap">
-								<option value="Yokohama"  onclick="CUBEMAP.cubemapName = value; CUBEMAP.initAll()"> Yokohama </option>
-								<option value="Areskutan" onclick="CUBEMAP.cubemapName = value ; CUBEMAP.initAll() "> Areskutan </option>
-								<option value="FortPoint" onclick="CUBEMAP.cubemapName = value ; CUBEMAP.initAll()" > FortPoint </option>
-								<option value="Lycksele" selected=true onclick="CUBEMAP.cubemapName = value ; CUBEMAP.initAll()"  > Lycksele </option>
-								<option value="Tantolunden" onclick="CUBEMAP.cubemapName = value ; CUBEMAP.initAll()"> Tantolunden </option>
-							</select><br>
+							<legend> Parametrage de la scene   </legend>
+							<div class="d-flex d-row">
+								<label class="col-6" for="skymap">Choix de la skymap : </label>
+								<div class="col-6">
+									<select class="form-select" name="skymap" id="skymap">
+										<option value="Yokohama"  onclick="CUBEMAP.cubemapName = value; CUBEMAP.initAll()"> Yokohama </option>
+										<option value="Areskutan" onclick="CUBEMAP.cubemapName = value ; CUBEMAP.initAll() "> Areskutan </option>
+										<option value="FortPoint" onclick="CUBEMAP.cubemapName = value ; CUBEMAP.initAll()" > FortPoint </option>
+										<option value="Lycksele" selected=true onclick="CUBEMAP.cubemapName = value ; CUBEMAP.initAll()"  > Lycksele </option>
+										<option value="Tantolunden" onclick="CUBEMAP.cubemapName = value ; CUBEMAP.initAll()"> Tantolunden </option>
+									</select>
+								</div>
+							</div>
+							
 
-							<label for="obj3D"> Objet dans la scene : </label>
-							<select name="obj3D" id="obj3D">
-								<option value="sphere_2" onclick="changeObj(value)"> sphere </option>
-								<option value="cube" onclick="changeObj(value)"> cube </option>
-								<option value="mustang" onclick="changeObj(value)"> mustang </option>
-								<option value="porsche" onclick="changeObj(value)"> porsche</option>
-								<option value="bunny" onclick="changeObj(value)"> bunny </option>
-							</select><br>							
-
+							<div class="d-flex d-row">
+								<label class="col-6" for="obj3D"> Objet dans la scene : </label>
+								<div class="col-6">
+									<select class="form-select" name="obj3D" id="obj3D">
+										<option value="sphere_2" onclick="changeObj(value)"> sphere </option>
+										<option value="cube" onclick="changeObj(value)"> cube </option>
+										<option value="mustang" onclick="changeObj(value)"> mustang </option>
+										<option value="porsche" onclick="changeObj(value)"> porsche</option>
+										<option value="bunny" onclick="changeObj(value)"> bunny </option>
+									</select>
+								</div>
+							</div>
+							<br>
 						</fieldset>
 					</form>
 				</td>
